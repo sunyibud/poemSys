@@ -9,11 +9,11 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddPostForm implements Serializable
+public class AddCommentForm implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    private String title;
+    private int type;   //一级评论type=1, 二级评论type=2
+    private long id; //为一级评论时表示postId, 二级评论时表示commentId;
     private String content;
-    private String coverImage;
 }

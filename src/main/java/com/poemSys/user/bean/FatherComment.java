@@ -20,4 +20,5 @@ public class FatherComment implements Serializable
     private String content;
     private LocalDateTime createdTime;
     private List<SonComment> sonComments;
+    private boolean isOwner;
 }

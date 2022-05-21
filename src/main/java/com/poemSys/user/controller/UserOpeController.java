@@ -36,9 +36,8 @@ public class UserOpeController
     FollowUserService followUserService;
 
     /**
-     * 点赞和取消点赞
-     * @param idForm
-     * @return
+     * 点赞和取消点赞古诗词
+     * @param idForm 古诗词id
      */
     @PostMapping("/poemLike")
     public Result poemLike(@RequestBody IdForm idForm)
@@ -46,6 +45,9 @@ public class UserOpeController
         return poemLikeService.ope(idForm);
     }
 
+    /**
+     * 收藏和取消收藏
+     */
     @PostMapping("/poemCollect")
     public Result poemCollect(@RequestBody IdForm idForm)
     {
@@ -56,7 +58,6 @@ public class UserOpeController
      * 用户点击某条私信（与某个用户的）,设该条私信的所有未读(sysLetter)为已读, 并
      * 设消息(sysMessage)为已读
      * @param idForm 点击的私信id(sysMessage)
-     * @return
      */
     @PostMapping("/readLetter")
     public Result readLetter(@RequestBody IdForm idForm)

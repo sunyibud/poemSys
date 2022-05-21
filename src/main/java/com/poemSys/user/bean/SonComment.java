@@ -19,4 +19,5 @@ public class SonComment implements Serializable
     private long toUserId;
     private String content;
     private LocalDateTime createdTime;
+    private boolean isOwner;
 }

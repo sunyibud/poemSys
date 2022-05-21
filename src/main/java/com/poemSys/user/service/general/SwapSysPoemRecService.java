@@ -10,7 +10,6 @@ import com.poemSys.common.service.ConUserPoemLikeService;
 import com.poemSys.common.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.SysPoemRes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,10 +39,10 @@ public class SwapSysPoemRecService
                     .eq("user_id", userId).eq("poem_id", sysPoem.getId()));
             ConUserPoemCollect conCollect = conUserPoemCollectService.getOne(new QueryWrapper<ConUserPoemCollect>()
                     .eq("user_id", userId).eq("poem_id", sysPoem.getId()));
-            if (conLike == null)
-                isLike = false;
-            if (conCollect == null)
-                isCollect = false;
+            if (conLike != null)
+                isLike = true;
+            if (conCollect != null)
+                isCollect = true;
         }
         return new SysPoemRes(sysPoem.getId(), sysPoem.getName(), sysPoem.getContent(), sysPoem.getDynasty(),
                 sysPoem.getPoet(), sysPoem.getTranslation(), sysPoem.getNotes(), sysPoem.getAppreciation(),

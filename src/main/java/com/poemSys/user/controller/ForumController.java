@@ -6,10 +6,12 @@ import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.service.SysPostService;
 import com.poemSys.user.bean.Form.AddPostForm;
-import com.poemSys.user.bean.Form.CommentOpeForm;
-import com.poemSys.user.service.forum.CommentOpeService;
-import com.poemSys.user.service.forum.DeleteCommentOpeService;
-import com.poemSys.user.service.forum.GetCommentByPostId;
+import com.poemSys.user.bean.Form.AddCommentForm;
+import com.poemSys.user.bean.Form.UpdateMyPostForm;
+import com.poemSys.user.bean.PostPageAns;
+import com.poemSys.user.service.forum.*;
+import com.poemSys.user.service.general.PostPageAnsPro;
+import com.poemSys.user.service.general.SwapSysPostRecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +29,40 @@ public class ForumController
     SysPostService sysPostService;
 
     @Autowired
+    GetPostByIdService getPostByIdService;
+
+    @Autowired
     GetCommentByPostId getCommentByPostId;
 
     @Autowired
-    CommentOpeService commentOpeService;
+    AddCommentService addCommentService;
 
     @Autowired
-    DeleteCommentOpeService deleteCommentOpeService;
+    DeleteMyCommentService deleteMyCommentService;
+
+    @Autowired
+    GetMyPostService getMyPostService;
+
+    @Autowired
+    PostPageAnsPro postPageAnsPro;
+
+    @Autowired
+    SwapSysPostRecService swapSysPostRecService;
+
+    @Autowired
+    AddPostService addPostService;
+
+    @Autowired
+    UpdateMyPostService updateMyPostService;
+
+    @Autowired
+    DeleteMyPostService deleteMyPostService;
+
+    @Autowired
+    PostLikeService postLikeService;
+
+    @Autowired
+    PostCollectService postCollectService;
 
     @PostMapping("/partPostList/{page}/{size}")
     public Result partPostList(@PathVariable("page") Integer page,
@@ -41,14 +70,14 @@ public class ForumController
     {
         Page<SysPost> postPage = new Page<>(page, size);
         Page<SysPost> pageAns = sysPostService.page(postPage);
-        return new Result(0, "分页获取帖子列表成功", pageAns);
+        PostPageAns res = postPageAnsPro.pro(pageAns);
+        return new Result(0, "分页获取帖子列表成功", res);
     }
 
     @PostMapping("/getPostById")
     public Result getPostById(IdForm idForm)
     {
-        SysPost sysPost = sysPostService.getById(idForm.getId());
-        return new Result(0, "帖子信息获取成功，id:"+sysPost.getId(), null);
+        return getPostByIdService.get(idForm);
     }
 
     @PostMapping("/getCommentByPostId")
@@ -61,60 +90,52 @@ public class ForumController
     public Result getMyPost(@PathVariable("page") Integer page,
                             @PathVariable("size") Integer size)
     {
-        return new Result();
+        return getMyPostService.get(page, size);
     }
 
     @PostMapping("/addPost")
     public Result addPost(AddPostForm addPostForm)
     {
-        return new Result();
+        return addPostService.add(addPostForm);
     }
 
-    @PostMapping("/updateMyPostOpe")
-    public Result updateMyPost()
+    @PostMapping("/updateMyPost")
+    public Result updateMyPost(UpdateMyPostForm updateMyPostForm)
     {
-        return new Result();
+        return updateMyPostService.update(updateMyPostForm);
     }
 
-    @PostMapping("/deleteMyPostOpe")
-    public Result deleteMyPostOpe(IdForm idForm)
+    @PostMapping("/deleteMyPost")
+    public Result deleteMyPost(IdForm idForm)
     {
-        return new Result();
+        return deleteMyPostService.delete(idForm);
     }
 
     /**
      * 评论操作
-     * @param commentOpeForm {type:类型, id:postId或CommentId}
-     * @return
+     * @param addCommentForm {type:类型, id:postId或CommentId}
      */
-    @PostMapping("/commentOpe")
-    public Result commentOpe(CommentOpeForm commentOpeForm)
+    @PostMapping("/addComment")
+    public Result addComment(AddCommentForm addCommentForm)
     {
-        return commentOpeService.comment(commentOpeForm);
+        return addCommentService.comment(addCommentForm);
     }
 
-    @PostMapping("/deleteCommentOpe")
-    public Result deleteCommentOpe(IdForm idForm)
+    @PostMapping("/deleteMyComment")
+    public Result deleteMyComment(IdForm idForm)
     {
-        return deleteCommentOpeService.delete(idForm);
+        return deleteMyCommentService.delete(idForm);
     }
 
-    @PostMapping("/postLikeOpe")
-    public Result postLikeOpe(IdForm idForm)
+    @PostMapping("/postLike")
+    public Result postLike(IdForm idForm)
     {
-        return new Result();
+        return postLikeService.like(idForm);
     }
 
-    @PostMapping("/postCollectOpe")
-    public Result postCollectOpe(IdForm idForm)
+    @PostMapping("/postCollect")
+    public Result postCollect(IdForm idForm)
     {
-        return new Result();
+        return postCollectService.collect(idForm);
     }
-
-    @PostMapping("/commentLikeOpe")
-    public Result commentLikeOpe(IdForm idForm)
-    {
-        return new Result();
-    }
-
 }
