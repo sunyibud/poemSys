@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/user")
 public class UserInfoController
 {
-    @Autowired
-    HttpServletRequest request;
 
     @Autowired
     GetUserInfoByJwtService getUserInfoByJwtService;
@@ -62,6 +60,9 @@ public class UserInfoController
 
     @Autowired
     MyMessageService myMessageService;
+
+    @Autowired
+    MyPostCollectService myPostCollectService;
 
     @RequestMapping("/sendEmailToLoginUser")
     public Result sendEmailToLoginUser()
@@ -125,7 +126,6 @@ public class UserInfoController
 
     /**
      * 分页获取我的关注列表
-     * @return
      */
     @GetMapping("/myFollow/{page}/{size}")
     public Result myFollow(@PathVariable("page") Integer page,
@@ -136,7 +136,6 @@ public class UserInfoController
 
     /**
      * 分页获取我的粉丝列表
-     * @return
      */
     @GetMapping("/myFans/{page}/{size}")
     public Result myFans(@PathVariable("page") Integer page,
@@ -147,7 +146,6 @@ public class UserInfoController
 
     /**
      * 分页获取我的古诗收藏列表
-     * @return
      */
     @GetMapping("/myPoemCollect/{page}/{size}")
     public Result myPoemCollect(@PathVariable("page") Integer page,
@@ -157,8 +155,17 @@ public class UserInfoController
     }
 
     /**
+     * 分页获取我的帖子收藏列表
+     */
+    @GetMapping("/myPostCollect/{page}/{size}")
+    public Result myPostCollect(@PathVariable("page") Integer page,
+                                @PathVariable("size") Integer size)
+    {
+        return myPostCollectService.getPageList(page, size);
+    }
+
+    /**
      * 获取我的各种类型未读消息的数量
-     * @return
      */
     @PostMapping("/newMessageNum")
     public Result newMessageNum()
@@ -169,7 +176,6 @@ public class UserInfoController
     /**
      * 获取我的各个种类的消息的内容，访问接口表示该种类消息状态改为已读（除私信）
      * @param type 消息种类（1：comment 2：newFans 3：likeOrCollect 4：sysMessage 5：letter）
-     * @return
      */
     @PostMapping("/myMessage/{type}")
     public Result myMessage(@PathVariable("type") Integer type)

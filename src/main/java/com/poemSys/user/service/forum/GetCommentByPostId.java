@@ -40,13 +40,16 @@ public class GetCommentByPostId
         long postId = idForm.getId();
 
         if(sysPostService.getById(postId)==null)
-            return new Result(1, "帖子不存在", null);
+            return new Result(1, "帖子不存在,id:"+postId, null);
 
         //该帖子下所有的评论
         List<ConPostComment> con = conPostCommentService.list(new QueryWrapper<ConPostComment>()
                 .eq("post_id", postId));
         List<Long> commentIds = new ArrayList<>();
         con.forEach(c-> commentIds.add(c.getCommentId()));
+        if(commentIds.isEmpty())
+            return new Result(0, "当前帖子还没有评论,id:"+postId, null);
+
         List<SysComment> comments = sysCommentService.list(new QueryWrapper<SysComment>()
                 .in("id", commentIds));
 
@@ -61,7 +64,7 @@ public class GetCommentByPostId
                     isOwner = true;
                 map.put(c.getId(), res.size());
                 res.add(new FatherComment(c.getId(), c.getOwnerUserId(), c.getContent(),
-                        c.getCreatedTime(), new ArrayList<>(), isOwner));
+                        c.getCreatedTime(), isOwner, new ArrayList<>()));
             }
         });
         comments.forEach(c->{//添加子评论到返回结果列表里父评论的List中
@@ -70,12 +73,13 @@ public class GetCommentByPostId
                 boolean isOwner = false;
                 if(c.getOwnerUserId()==userId)
                     isOwner = true;
-                FatherComment fatherComment = res.get(map.get(c.getPostOrFather()));
+                long fatherCommentId = c.getPostOrFather();
+                FatherComment fatherComment = res.get(map.get(fatherCommentId));
                 fatherComment.getSonComments().add(new SonComment(c.getId(),
                         c.getOwnerUserId(), fatherComment.getOwnerUserId(),
                         c.getContent(), c.getCreatedTime(), isOwner));
             }
         });
-        return new Result(0, "帖子"+postId+"(id)的评论获取成功", null);
+        return new Result(0, "帖子"+postId+"(id)的评论获取成功", res);
     }
 }

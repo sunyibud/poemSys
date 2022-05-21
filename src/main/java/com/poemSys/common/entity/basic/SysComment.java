@@ -23,4 +23,5 @@ public class SysComment extends BaseEntity
     private LocalDateTime createdTime;
     private int type;
     private long postOrFather;
+    private String uuid;
 }
