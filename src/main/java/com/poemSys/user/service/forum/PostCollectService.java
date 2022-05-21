@@ -59,7 +59,7 @@ public class PostCollectService
             isCollect = true;
             //推送消息
             ConUserPost con1 = conUserPostService.getOne(new QueryWrapper<ConUserPost>()
-                    .eq("user_id", userId).eq("post_id", postId));
+                    .eq("post_id", postId));
             long postOwnerId = con1.getUserId();
             sysMessageService.save(new SysMessage(postOwnerId, false, 3, postId, 0, "用户收藏了你的帖子", 0,
                     true, LocalDateTime.now(), UUID.randomUUID().toString(), 0));

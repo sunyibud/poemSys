@@ -13,10 +13,7 @@ import com.poemSys.user.service.forum.*;
 import com.poemSys.user.service.general.PostPageAnsPro;
 import com.poemSys.user.service.general.SwapSysPostRecService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 论坛模块接口
@@ -75,13 +72,13 @@ public class ForumController
     }
 
     @PostMapping("/getPostById")
-    public Result getPostById(IdForm idForm)
+    public Result getPostById(@RequestBody IdForm idForm)
     {
         return getPostByIdService.get(idForm);
     }
 
     @PostMapping("/getCommentByPostId")
-    public Result getCommentByPostId(IdForm idForm)
+    public Result getCommentByPostId(@RequestBody IdForm idForm)
     {
         return getCommentByPostId.get(idForm);
     }
@@ -94,19 +91,19 @@ public class ForumController
     }
 
     @PostMapping("/addPost")
-    public Result addPost(AddPostForm addPostForm)
+    public Result addPost(@RequestBody AddPostForm addPostForm)
     {
         return addPostService.add(addPostForm);
     }
 
     @PostMapping("/updateMyPost")
-    public Result updateMyPost(UpdateMyPostForm updateMyPostForm)
+    public Result updateMyPost(@RequestBody UpdateMyPostForm updateMyPostForm)
     {
         return updateMyPostService.update(updateMyPostForm);
     }
 
     @PostMapping("/deleteMyPost")
-    public Result deleteMyPost(IdForm idForm)
+    public Result deleteMyPost(@RequestBody IdForm idForm)
     {
         return deleteMyPostService.delete(idForm);
     }
@@ -116,25 +113,25 @@ public class ForumController
      * @param addCommentForm {type:类型, id:postId或CommentId}
      */
     @PostMapping("/addComment")
-    public Result addComment(AddCommentForm addCommentForm)
+    public Result addComment(@RequestBody AddCommentForm addCommentForm)
     {
         return addCommentService.comment(addCommentForm);
     }
 
     @PostMapping("/deleteMyComment")
-    public Result deleteMyComment(IdForm idForm)
+    public Result deleteMyComment(@RequestBody IdForm idForm)
     {
         return deleteMyCommentService.delete(idForm);
     }
 
     @PostMapping("/postLike")
-    public Result postLike(IdForm idForm)
+    public Result postLike(@RequestBody IdForm idForm)
     {
         return postLikeService.like(idForm);
     }
 
     @PostMapping("/postCollect")
-    public Result postCollect(IdForm idForm)
+    public Result postCollect(@RequestBody IdForm idForm)
     {
         return postCollectService.collect(idForm);
     }

@@ -33,10 +33,14 @@ public class GetMyPostService
     public Result get(int page, int size)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
-        List<ConUserPost> con = conUserPostService.list(new QueryWrapper<ConUserPost>()
+
+        List<ConUserPost> conList = conUserPostService.list(new QueryWrapper<ConUserPost>()
                 .eq("user_id", userId));
+        if(conList.isEmpty())
+            return new Result(0, "用户"+userId+"(id)没有发布帖子", null);
+
         List<Long> postIds = new ArrayList<>();
-        con.forEach(c-> postIds.add(c.getPostId()));
+        conList.forEach(c-> postIds.add(c.getPostId()));
         Page<SysPost> postPage = new Page<>(page, size);
         Page<SysPost> pageAns = sysPostService.page(postPage, new QueryWrapper<SysPost>()
                 .in("id", postIds));
