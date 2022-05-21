@@ -1,4 +1,4 @@
-package com.poemSys.common.entity.basic;
+package com.poemSys.common.entity.connection;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.poemSys.common.entity.BaseEntity;
@@ -7,22 +7,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("sys_post")
-public class SysPost extends BaseEntity
+@TableName("con_user_post_like")
+public class ConUserPostLike extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    private String title;
-    private String content;
-    private LocalDateTime createdTime;
-    private int collectNum;
-    private int likeNum;
-    private String coverImage;
-    private String uuid;
+    private long userId;
+    private long postId;
 }

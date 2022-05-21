@@ -24,11 +24,8 @@ public class PoemPageAnsPro
     {
         List<SysPoem> records = pageAns.getRecords();
         List<SysPoemRes> newRecords = new ArrayList<>();
-        records.forEach(r->{
-            newRecords.add(swapSysPoemRecService.swap(r));
-        });
-        PoemPageAns finalAns = new PoemPageAns(pageAns.getTotal(), pageAns.getSize(),
+        records.forEach(r-> newRecords.add(swapSysPoemRecService.swap(r)));
+        return new PoemPageAns(pageAns.getTotal(), pageAns.getSize(),
                 pageAns.getCurrent(), pageAns.getPages(), newRecords);
-        return finalAns;
     }
 }

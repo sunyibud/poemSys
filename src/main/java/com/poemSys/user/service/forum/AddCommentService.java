@@ -9,7 +9,7 @@ import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysCommentService;
 import com.poemSys.common.service.SysMessageService;
 import com.poemSys.common.service.general.GetLoginSysUserService;
-import com.poemSys.user.bean.Form.CommentOpeForm;
+import com.poemSys.user.bean.Form.AddCommentForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-public class CommentOpeService
+public class AddCommentService
 {
     @Autowired
     SysCommentService sysCommentService;
@@ -31,15 +31,15 @@ public class CommentOpeService
     @Autowired
     SysMessageService sysMessageService;
 
-    public Result comment(CommentOpeForm commentOpeForm)
+    public Result comment(AddCommentForm addCommentForm)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
-        int type = commentOpeForm.getType();
-        String content = commentOpeForm.getContent();
-        long id = commentOpeForm.getId(); //type为1时表示postId, 2表示commentId
+        int type = addCommentForm.getType();
+        String content = addCommentForm.getContent();
+        long id = addCommentForm.getId(); //type为1时表示postId, 2表示commentId
         sysCommentService.save(new SysComment(userId, content,
                 LocalDateTime.now(), type, id));
-        //接受消息设置
+        //推送消息
         if(type==1)
         {
             long postOwnerId = conUserPostService.getOne(new QueryWrapper<ConUserPost>()
