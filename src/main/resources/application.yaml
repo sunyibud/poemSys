@@ -54,6 +54,15 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
 
 
+  qrcode:
+    # 生成二维码的类型 png jpg jpeg等
+    formatType: "png"
+    # 二维码的宽度
+    width: 150
+    # 二维码的高度
+    height: 150
+
+
 #  security:
 #    user:
 #      name: user
