@@ -9,8 +9,10 @@ import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysPostService;
 import com.poemSys.common.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.Form.AddPostForm;
+import com.poemSys.user.service.general.ImageUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -26,17 +28,24 @@ public class AddPostService
     @Autowired
     ConUserPostService conUserPostService;
 
+    @Autowired
+    ImageUploadService imageUploadService;
+
     public Result add(AddPostForm addPostForm)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
 
         String title = addPostForm.getTitle();
         String content = addPostForm.getContent();
-        String coverImage = addPostForm.getCoverImage();
+        MultipartFile coverImage = addPostForm.getCoverImage();
         String uuid = UUID.randomUUID().toString();
 
+        Result uploadRes = imageUploadService.upload(coverImage, "/images/forum");
+        if(uploadRes.getCode()!=0)
+            return uploadRes;
+        String imagePath = uploadRes.getData().toString();
         sysPostService.save(new SysPost(title, content, LocalDateTime.now(), 0,
-                0, coverImage, uuid));
+                0, imagePath, uuid));
         SysPost sysPost = sysPostService.getOne(new QueryWrapper<SysPost>()
                 .eq("uuid", uuid));
         conUserPostService.save(new ConUserPost(userId, sysPost.getId()));

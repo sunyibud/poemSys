@@ -3,6 +3,7 @@ package com.poemSys.user.bean.Form;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 
@@ -15,5 +16,5 @@ public class AddPostForm implements Serializable
 
     private String title;
     private String content;
-    private String coverImage;
+    private MultipartFile coverImage;
 }

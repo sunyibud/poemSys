@@ -10,10 +10,12 @@ import com.poemSys.user.bean.Form.AddCommentForm;
 import com.poemSys.user.bean.Form.UpdateMyPostForm;
 import com.poemSys.user.bean.PostPageAns;
 import com.poemSys.user.service.forum.*;
+import com.poemSys.user.service.general.ImageUploadService;
 import com.poemSys.user.service.general.PostPageAnsPro;
 import com.poemSys.user.service.general.SwapSysPostRecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 论坛模块接口
@@ -60,6 +62,9 @@ public class ForumController
 
     @Autowired
     PostCollectService postCollectService;
+
+    @Autowired
+    ImageUploadService imageUploadService;
 
     @PostMapping("/partPostList/{page}/{size}")
     public Result partPostList(@PathVariable("page") Integer page,
@@ -134,5 +139,11 @@ public class ForumController
     public Result postCollect(@RequestBody IdForm idForm)
     {
         return postCollectService.collect(idForm);
+    }
+
+    @PostMapping("/imageUpload")
+    public Result imageUpload(MultipartFile file)
+    {
+        return imageUploadService.upload(file, "/images/forum");
     }
 }

@@ -29,7 +29,7 @@ public class UserInfoController
     UpdateLoginUserInfoService updateLoginUserInfoService;
 
     @Autowired
-    UploadHeadIconService uploadHeadIconService;
+    ImageUploadService imageUploadService;
 
     @Autowired
     ChangePasswordService changePasswordService;
@@ -99,7 +99,7 @@ public class UserInfoController
     @PostMapping("/uploadHeadIcon")
     public Result uploadHeadIcon(MultipartFile file)
     {
-        return uploadHeadIconService.save(file);
+        return imageUploadService.upload(file, "/images/headIcons/");
     }
 
 
