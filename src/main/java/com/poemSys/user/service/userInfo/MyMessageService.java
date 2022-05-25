@@ -8,7 +8,7 @@ import com.poemSys.common.entity.connection.ConMessageLetter;
 import com.poemSys.common.service.ConMessageLetterService;
 import com.poemSys.common.service.SysLetterService;
 import com.poemSys.common.service.SysMessageService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.LetterMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,9 +82,7 @@ public class MyMessageService
                                 .eq("message_id", m.getId()));
                         List<Long> letterIds = new ArrayList<>();
                         con.forEach(e ->
-                        {
-                            letterIds.add(e.getLetterId());
-                        });
+                                letterIds.add(e.getLetterId()));
                         List<SysLetter> sysLetters = sysLetterService.list(new QueryWrapper<SysLetter>()
                                 .in("id", letterIds));
                         //未读的消息的数量

@@ -9,6 +9,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 /**
  * 生成古诗词俩链接二维码
  */
+@Service
 public class QRCodeService
 {
     /**
@@ -43,7 +45,6 @@ public class QRCodeService
             hints.put(EncodeHintType.MARGIN, 2); // 设置图片的边距
 
             QRCodeWriter writer = new QRCodeWriter();
-            System.out.println("width:" + width + ",height:" + height);
             BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, width, height, hints);
             BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
             ImageIO.write(bufferedImage, formatType, os);

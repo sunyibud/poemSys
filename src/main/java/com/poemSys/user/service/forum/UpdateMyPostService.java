@@ -6,7 +6,7 @@ import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.entity.connection.ConUserPost;
 import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysPostService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.Form.UpdateMyPostForm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

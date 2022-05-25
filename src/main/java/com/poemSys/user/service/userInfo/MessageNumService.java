@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysMessage;
 import com.poemSys.common.service.SysMessageService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.MessageNum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

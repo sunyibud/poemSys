@@ -9,7 +9,7 @@ import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.entity.connection.ConPostComment;
 import com.poemSys.common.entity.connection.ConUserPost;
 import com.poemSys.common.service.*;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.Form.AddCommentForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

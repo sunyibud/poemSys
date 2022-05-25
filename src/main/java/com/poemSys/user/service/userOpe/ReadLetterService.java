@@ -9,7 +9,7 @@ import com.poemSys.common.entity.connection.ConMessageLetter;
 import com.poemSys.common.service.ConMessageLetterService;
 import com.poemSys.common.service.SysLetterService;
 import com.poemSys.common.service.SysMessageService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,9 +48,7 @@ public class ReadLetterService
         List<ConMessageLetter> con = conMessageLetterService.list(new QueryWrapper<ConMessageLetter>()
                 .eq("message_id", sysMessageId));
         List<Long> letterIds = new ArrayList<>();
-        con.forEach(c->{
-            letterIds.add(c.getLetterId());
-        });
+        con.forEach(c-> letterIds.add(c.getLetterId()));
         List<SysLetter> letters = sysLetterService.list(new QueryWrapper<SysLetter>()
                 .in("id", letterIds));
         letters.forEach(l->{

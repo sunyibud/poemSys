@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poemSys.admin.bean.PageListRes;
 import com.poemSys.common.bean.Result;
-import com.poemSys.common.entity.basic.SysPoem;
-import com.poemSys.common.entity.basic.SysPoet;
 import com.poemSys.common.entity.basic.SysPost;
-import com.poemSys.common.entity.connection.ConUserPoemCollect;
 import com.poemSys.common.entity.connection.ConUserPostCollect;
 import com.poemSys.common.service.ConUserPostCollectService;
 import com.poemSys.common.service.SysPostService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
+import com.poemSys.user.bean.PostPageAns;
+import com.poemSys.user.service.general.PostPageAnsProService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,9 @@ public class MyPostCollectService
     @Autowired
     SysPostService sysPostService;
 
+    @Autowired
+    PostPageAnsProService postPageAnsProService;
+
     public Result getPageList(Integer page, Integer size)
     {
         Long id = getLoginSysUserService.getSysUser().getId();
@@ -45,6 +47,7 @@ public class MyPostCollectService
             ));
         Page<SysPost> pageAns = sysPostService.page(postPage, new QueryWrapper<SysPost>()
                 .in("id", postIds));
-        return new Result(0, "分页获取用户收藏帖子列表成功,共"+pageAns.getTotal()+"条", pageAns);
+        PostPageAns finalAns = postPageAnsProService.pro(pageAns);
+        return new Result(0, "分页获取用户收藏帖子列表成功,共"+finalAns.getTotal()+"条", finalAns);
     }
 }

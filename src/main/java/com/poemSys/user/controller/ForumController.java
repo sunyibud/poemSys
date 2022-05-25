@@ -11,7 +11,7 @@ import com.poemSys.user.bean.Form.UpdateMyPostForm;
 import com.poemSys.user.bean.PostPageAns;
 import com.poemSys.user.service.forum.*;
 import com.poemSys.user.service.general.ImageUploadService;
-import com.poemSys.user.service.general.PostPageAnsPro;
+import com.poemSys.user.service.general.PostPageAnsProService;
 import com.poemSys.user.service.general.SwapSysPostRecService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +43,7 @@ public class ForumController
     GetMyPostService getMyPostService;
 
     @Autowired
-    PostPageAnsPro postPageAnsPro;
+    PostPageAnsProService postPageAnsProService;
 
     @Autowired
     SwapSysPostRecService swapSysPostRecService;
@@ -66,13 +66,16 @@ public class ForumController
     @Autowired
     ImageUploadService imageUploadService;
 
+    @Autowired
+    GetMyFollowPost getMyFollowPost;
+
     @PostMapping("/partPostList/{page}/{size}")
     public Result partPostList(@PathVariable("page") Integer page,
                                @PathVariable("size") Integer size)
     {
         Page<SysPost> postPage = new Page<>(page, size);
         Page<SysPost> pageAns = sysPostService.page(postPage);
-        PostPageAns res = postPageAnsPro.pro(pageAns);
+        PostPageAns res = postPageAnsProService.pro(pageAns);
         return new Result(0, "分页获取帖子列表成功", res);
     }
 
@@ -95,8 +98,12 @@ public class ForumController
         return getMyPostService.get(page, size);
     }
 
+    /**
+     * 新增帖子
+     * @param addPostForm FormData格式
+     */
     @PostMapping("/addPost")
-    public Result addPost(@RequestBody AddPostForm addPostForm)
+    public Result addPost(AddPostForm addPostForm)
     {
         return addPostService.add(addPostForm);
     }
@@ -145,5 +152,15 @@ public class ForumController
     public Result imageUpload(MultipartFile file)
     {
         return imageUploadService.upload(file, "/images/forum");
+    }
+
+    /**
+     * 分页获取我关注用户发的帖子
+     */
+    @PostMapping("/getMyFollowPost/{page}/{size}")
+    public Result myFollowPost(@PathVariable("page") Integer page,
+                               @PathVariable("size") Integer size)
+    {
+        return getMyFollowPost.get(page, size);
     }
 }

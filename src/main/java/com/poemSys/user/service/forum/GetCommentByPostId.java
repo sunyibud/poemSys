@@ -8,9 +8,11 @@ import com.poemSys.common.entity.connection.ConPostComment;
 import com.poemSys.common.service.ConPostCommentService;
 import com.poemSys.common.service.SysCommentService;
 import com.poemSys.common.service.SysPostService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.common.service.SysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.FatherComment;
 import com.poemSys.user.bean.SonComment;
+import com.poemSys.user.service.general.SwapUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,12 @@ public class GetCommentByPostId
 
     @Autowired
     GetLoginSysUserService getLoginSysUserService;
+
+    @Autowired
+    SysUserService sysUserService;
+
+    @Autowired
+    SwapUserInfoService swapUserInfoService;
 
     public Result get(IdForm idForm)
     {
@@ -63,8 +71,9 @@ public class GetCommentByPostId
                 if(c.getOwnerUserId()==userId)
                     isOwner = true;
                 map.put(c.getId(), res.size());
-                res.add(new FatherComment(c.getId(), c.getOwnerUserId(), c.getContent(),
-                        c.getCreatedTime(), isOwner, new ArrayList<>()));
+                res.add(new FatherComment(c.getId(),
+                        swapUserInfoService.swap(sysUserService.getById(c.getOwnerUserId())),
+                        c.getContent(), c.getCreatedTime(), isOwner, new ArrayList<>()));
             }
         });
         comments.forEach(c->{//添加子评论到返回结果列表里父评论的List中
@@ -76,7 +85,8 @@ public class GetCommentByPostId
                 long fatherCommentId = c.getPostOrFather();
                 FatherComment fatherComment = res.get(map.get(fatherCommentId));
                 fatherComment.getSonComments().add(new SonComment(c.getId(),
-                        c.getOwnerUserId(), fatherComment.getOwnerUserId(),
+                        swapUserInfoService.swap(sysUserService.getById(c.getOwnerUserId())),
+                        fatherComment.getOwnerUserInfo(),
                         c.getContent(), c.getCreatedTime(), isOwner));
             }
         });

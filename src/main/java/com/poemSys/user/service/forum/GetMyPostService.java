@@ -7,9 +7,9 @@ import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.entity.connection.ConUserPost;
 import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysPostService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.PostPageAns;
-import com.poemSys.user.service.general.PostPageAnsPro;
+import com.poemSys.user.service.general.PostPageAnsProService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class GetMyPostService
     GetLoginSysUserService getLoginSysUserService;
 
     @Autowired
-    PostPageAnsPro postPageAnsPro;
+    PostPageAnsProService postPageAnsProService;
 
     @Autowired
     SysPostService sysPostService;
@@ -44,7 +44,7 @@ public class GetMyPostService
         Page<SysPost> postPage = new Page<>(page, size);
         Page<SysPost> pageAns = sysPostService.page(postPage, new QueryWrapper<SysPost>()
                 .in("id", postIds));
-        PostPageAns res = postPageAnsPro.pro(pageAns);
+        PostPageAns res = postPageAnsProService.pro(pageAns);
         return new Result(0, "分页获取我的帖子列表成功", res);
     }
 }

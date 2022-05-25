@@ -9,11 +9,10 @@ import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.entity.connection.ConUserFollow;
 import com.poemSys.common.service.ConUserFollowService;
 import com.poemSys.common.service.SysUserService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +39,7 @@ public class MyFollowService
         List<ConUserFollow> list = conUserFollowService.list(new QueryWrapper<ConUserFollow>()
                 .eq("follow_user_id", id));
         List<Long> beFollowList = new ArrayList<>();
-        list.forEach(l->{
-            beFollowList.add(l.getBeFollowUserId());
-        });
+        list.forEach(l-> beFollowList.add(l.getBeFollowUserId()));
         if(beFollowList.isEmpty())
             return new Result(0, "分页获取用户粉丝列表成功,共0条", new PageListRes(
                     0L, size.longValue(), page.longValue(), 0L, null

@@ -14,13 +14,12 @@ import com.poemSys.user.bean.Form.NumForm;
 import com.poemSys.user.bean.Form.PageByIdForm;
 import com.poemSys.user.bean.PoemPageAns;
 import com.poemSys.user.bean.SysPoemRes;
-import com.poemSys.user.service.general.PoemPageAnsPro;
+import com.poemSys.user.service.general.PoemPageAnsProService;
 import com.poemSys.user.service.general.SwapSysPoemRecService;
 import com.poemSys.user.service.poetryInfo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -30,9 +29,6 @@ import java.util.List;
 @RequestMapping("/api/poetry")
 public class PoetryInfoController
 {
-    @Autowired
-    HttpServletRequest request;
-
     @Autowired
     SysPoemService sysPoemService;
 
@@ -76,7 +72,7 @@ public class PoetryInfoController
     SwapSysPoemRecService swapSysPoemRecService;
 
     @Autowired
-    PoemPageAnsPro poemPageAnsPro;
+    PoemPageAnsProService poemPageAnsProService;
 
     @GetMapping("/partPoemList/{page}/{size}")
     public Result partPoemList(@PathVariable("page") Integer page,
@@ -84,7 +80,7 @@ public class PoetryInfoController
     {
         Page<SysPoem> poemPage = new Page<>(page, size);
         Page<SysPoem> pageAns = sysPoemService.page(poemPage);
-        PoemPageAns res = poemPageAnsPro.pro(pageAns);
+        PoemPageAns res = poemPageAnsProService.pro(pageAns);
         return new Result(0, "古诗词部分列表获取成功", res);
     }
 
@@ -99,7 +95,6 @@ public class PoetryInfoController
     /**
      * 随机获取num个名句
      * @param numForm 数量（超过100个按100）
-     * @return
      */
     @PostMapping("/getNumSentence")
     public Result getNumSentence(@RequestBody NumForm numForm)
@@ -110,7 +105,6 @@ public class PoetryInfoController
     /**
      * (从推荐古诗库中)随机获取num数量的古诗词信息
      * @param numForm //num超过100时按100计算
-     * @return
      */
     @PostMapping("/getNumPoem")
     public Result getNumPoem(@RequestBody NumForm numForm)
@@ -131,7 +125,6 @@ public class PoetryInfoController
     /**
      * (从推荐诗人库中）随机获取num数量的诗人信息
      * @param numForm //num超过100时按100计算
-     * @return
      */
     @PostMapping("/getNumPoet")
     public Result getNumPoet(@RequestBody NumForm numForm)
@@ -141,7 +134,6 @@ public class PoetryInfoController
 
     /**
      * 获取推荐的100个诗人
-     * @return
      */
     @PostMapping("/getRecPoets")
     public Result getRecPoets()
@@ -178,7 +170,6 @@ public class PoetryInfoController
 
     /**
      * 获取古诗词标签列表（所有的标签）
-     * @return
      */
     @PostMapping("/getTagList")
     public Result getTagList()
@@ -189,7 +180,6 @@ public class PoetryInfoController
 
     /**
      * 分页获取某一种标签下的所有古诗词
-     * @return
      */
     @PostMapping("/getPoemsByTag")
     public Result getPoemsByTag(@RequestBody PageByIdForm pageByIdForm)

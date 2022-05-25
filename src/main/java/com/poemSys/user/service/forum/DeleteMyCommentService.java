@@ -4,7 +4,7 @@ import com.poemSys.admin.bean.Form.IdForm;
 import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysComment;
 import com.poemSys.common.service.SysCommentService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -16,7 +16,7 @@ public class FatherComment implements Serializable
     private static final long serialVersionUID = 1L;
 
     private long id;
-    private long ownerUserId;
+    private UserInfo ownerUserInfo;
     private String content;
     private LocalDateTime createdTime;
     private boolean isOwner;

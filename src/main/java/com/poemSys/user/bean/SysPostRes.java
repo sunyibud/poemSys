@@ -15,6 +15,7 @@ public class SysPostRes implements Serializable
     private static final long serialVersionUID = 1L;
     
     private long id;
+    private UserInfo ownerUserInfo;
     private String title;
     private String content;
     private LocalDateTime createdTime;

@@ -5,7 +5,7 @@ import com.poemSys.common.bean.IsOk;
 import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.common.utils.RedisUtil;
 import com.poemSys.user.bean.Form.ResetPasswordForm;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Service

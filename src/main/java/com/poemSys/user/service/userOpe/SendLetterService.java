@@ -9,7 +9,7 @@ import com.poemSys.common.entity.connection.ConMessageLetter;
 import com.poemSys.common.service.ConMessageLetterService;
 import com.poemSys.common.service.SysLetterService;
 import com.poemSys.common.service.SysMessageService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.Form.SendLetterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

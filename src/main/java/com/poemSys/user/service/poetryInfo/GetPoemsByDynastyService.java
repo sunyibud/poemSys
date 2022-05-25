@@ -12,7 +12,7 @@ import com.poemSys.common.service.SysDynastyService;
 import com.poemSys.common.service.SysPoemService;
 import com.poemSys.user.bean.Form.PageByIdForm;
 import com.poemSys.user.bean.PoemPageAns;
-import com.poemSys.user.service.general.PoemPageAnsPro;
+import com.poemSys.user.service.general.PoemPageAnsProService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class GetPoemsByDynastyService
     SysPoemService sysPoemService;
 
     @Autowired
-    PoemPageAnsPro poemPageAnsPro;
+    PoemPageAnsProService poemPageAnsProService;
 
     public Result get(PageByIdForm pageByIdForm)
     {
@@ -47,9 +47,7 @@ public class GetPoemsByDynastyService
         List<Long> poemIds = new ArrayList<>();
         List<ConDynastyPoem> list = conDynastyPoemService.list(new QueryWrapper<ConDynastyPoem>()
                 .eq("dynasty_id", dynastyId));
-        list.forEach(l -> {
-            poemIds.add(l.getPoemId());
-        });
+        list.forEach(l -> poemIds.add(l.getPoemId()));
         if (poemIds.isEmpty())
             return new Result(0, "分页获取朝代为"+dynastyName+"的古诗词列表成功,共0条", new PageListRes(
                     0L, size, page, 0L, null
@@ -57,7 +55,7 @@ public class GetPoemsByDynastyService
         Page<SysPoem> poemPage = new Page<>(page, size);
         Page<SysPoem> pageAns = sysPoemService.page(poemPage,
                 new QueryWrapper<SysPoem>().in("id", poemIds));
-        PoemPageAns res = poemPageAnsPro.pro(pageAns);
+        PoemPageAns res = poemPageAnsProService.pro(pageAns);
         return new Result(0, "分页获取朝代为"+dynastyName+"的古诗词列表成功,共"+pageAns.getTotal()+"条", res);
     }
 }

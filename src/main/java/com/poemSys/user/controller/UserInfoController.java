@@ -1,6 +1,7 @@
 package com.poemSys.user.controller;
 
 
+import com.poemSys.admin.bean.Form.IdForm;
 import com.poemSys.common.bean.Result;
 import com.poemSys.user.bean.Form.*;
 import com.poemSys.user.bean.UserInfo;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户个人信息模块接口
@@ -21,15 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/user")
 public class UserInfoController
 {
-
-    @Autowired
-    GetUserInfoByJwtService getUserInfoByJwtService;
-
     @Autowired
     UpdateLoginUserInfoService updateLoginUserInfoService;
-
-    @Autowired
-    ImageUploadService imageUploadService;
 
     @Autowired
     ChangePasswordService changePasswordService;
@@ -64,10 +57,19 @@ public class UserInfoController
     @Autowired
     MyPostCollectService myPostCollectService;
 
+    @Autowired
+    UploadHeadIconService uploadHeadIconService;
+
+    @Autowired
+    GetLoginUserInfoService getLoginUserInfoService;
+
+    @Autowired
+    GetUserInfoByIdService getUserInfoByIdService;
+
     @RequestMapping("/sendEmailToLoginUser")
     public Result sendEmailToLoginUser()
     {
-        String emailAddress = getUserInfoByJwtService.getUserInfo().getEmail();
+        String emailAddress = getLoginUserInfoService.getUserInfo().getEmail();
         return sendEmailService.send(emailAddress);
     }
 
@@ -86,7 +88,8 @@ public class UserInfoController
     @PostMapping("/loginUserInfo")
     public Result getLoginUserInfo()
     {
-        UserInfo userInfo = getUserInfoByJwtService.getUserInfo();
+
+        UserInfo userInfo = getLoginUserInfoService.getUserInfo();
         return new Result(0, "获取登录用户信息成功", userInfo);
     }
 
@@ -99,7 +102,7 @@ public class UserInfoController
     @PostMapping("/uploadHeadIcon")
     public Result uploadHeadIcon(MultipartFile file)
     {
-        return imageUploadService.upload(file, "/images/headIcons/");
+        return uploadHeadIconService.upload(file);
     }
 
 
@@ -151,6 +154,7 @@ public class UserInfoController
     public Result myPoemCollect(@PathVariable("page") Integer page,
                                 @PathVariable("size") Integer size)
     {
+
         return myPoemCollectService.getPageList(page, size);
     }
 
@@ -181,5 +185,11 @@ public class UserInfoController
     public Result myMessage(@PathVariable("type") Integer type)
     {
         return myMessageService.get(type);
+    }
+
+    @PostMapping("/getUserInfoById")
+    public Result getUserInfoById(IdForm idForm)
+    {
+        return getUserInfoByIdService.get(idForm);
     }
 }

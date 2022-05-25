@@ -3,12 +3,15 @@ package com.poemSys.user.service.general;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.entity.basic.SysUser;
+import com.poemSys.common.entity.connection.ConUserPost;
 import com.poemSys.common.entity.connection.ConUserPostCollect;
 import com.poemSys.common.entity.connection.ConUserPostLike;
 import com.poemSys.common.service.ConUserPostCollectService;
 import com.poemSys.common.service.ConUserPostLikeService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.common.service.ConUserPostService;
+import com.poemSys.common.service.SysUserService;
 import com.poemSys.user.bean.SysPostRes;
+import com.poemSys.user.bean.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,15 @@ public class SwapSysPostRecService
 
     @Autowired
     ConUserPostCollectService conUserPostCollectService;
+
+    @Autowired
+    SysUserService sysUserService;
+
+    @Autowired
+    ConUserPostService conUserPostService;
+
+    @Autowired
+    SwapUserInfoService swapUserInfoService;
 
     public SysPostRes swap(SysPost sysPost)
     {
@@ -40,7 +52,13 @@ public class SwapSysPostRecService
             if (conCollect != null)
                 isCollect = true;
         }
-        return new SysPostRes(sysPost.getId(), sysPost.getTitle(), sysPost.getContent(),
+
+        ConUserPost con = conUserPostService.getOne(new QueryWrapper<ConUserPost>()
+                .eq("post_id", sysPost.getId()));
+        SysUser postUser = sysUserService.getById(con.getUserId());
+        UserInfo postUserInfo = swapUserInfoService.swap(postUser);
+
+        return new SysPostRes(sysPost.getId(), postUserInfo, sysPost.getTitle(), sysPost.getContent(),
                 sysPost.getCreatedTime(), sysPost.getCollectNum(), sysPost.getLikeNum(),
                 sysPost.getCoverImage(), isLike, isCollect);
     }

@@ -11,7 +11,7 @@ import com.poemSys.common.service.ConUserPostLikeService;
 import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysMessageService;
 import com.poemSys.common.service.SysPostService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

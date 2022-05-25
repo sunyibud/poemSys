@@ -6,7 +6,7 @@ import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.connection.ConUserPoemLike;
 import com.poemSys.common.service.ConUserPoemLikeService;
 import com.poemSys.common.service.SysPoemService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

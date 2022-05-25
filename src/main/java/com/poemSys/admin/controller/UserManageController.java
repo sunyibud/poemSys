@@ -7,7 +7,7 @@ import com.poemSys.admin.service.userManage.SearchUserService;
 import com.poemSys.admin.service.userManage.UpdateUserInfoService;
 import com.poemSys.admin.bean.PageListRes;
 import com.poemSys.common.bean.Result;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,9 +27,6 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class UserManageController
 {
-    @Autowired
-    HttpServletRequest request;
-
     @Autowired
     SysUserService sysUserService;
 
@@ -71,7 +67,7 @@ public class UserManageController
     @PostMapping("/deleteUser")
     public Result deleteUser(@RequestBody IdForm deleteUserForm)
     {
-        Long id = deleteUserForm.getId();
+        long id = deleteUserForm.getId();
         if(id==1)
             return new Result(-2, "无法删除系统默认用户", null);
         sysUserService.deleteSysUserById(id);

@@ -52,6 +52,10 @@ spring:
           socketFactory:
             prot: 465
             class: javax.net.ssl.SSLSocketFactory
+  servlet:
+    multipart:
+      max-file-size: 20
+      max-request-size: 20
 
 
 #  security:

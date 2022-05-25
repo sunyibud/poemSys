@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 用户前端展示的非敏感个人信息
+ * 用户后台展示的非敏感个人信息
  */
 @Data
 @NoArgsConstructor

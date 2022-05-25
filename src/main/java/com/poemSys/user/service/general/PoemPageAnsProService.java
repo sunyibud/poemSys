@@ -15,7 +15,7 @@ import java.util.List;
  * 对古诗词分页获取结果进行加工处理（加上isLike, isCollect字段）
  */
 @Service
-public class PoemPageAnsPro
+public class PoemPageAnsProService
 {
     @Autowired
     SwapSysPoemRecService swapSysPoemRecService;

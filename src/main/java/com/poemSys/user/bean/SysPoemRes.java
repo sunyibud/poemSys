@@ -31,4 +31,5 @@ public class SysPoemRes implements Serializable
 
     private boolean isLike;
     private boolean isCollect;
+    private String QRCodeBase64Img;
 }

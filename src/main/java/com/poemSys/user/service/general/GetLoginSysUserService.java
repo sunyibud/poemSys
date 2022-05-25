@@ -1,4 +1,4 @@
-package com.poemSys.common.service.general;
+package com.poemSys.user.service.general;
 
 import cn.hutool.json.JSONUtil;
 import com.poemSys.common.entity.basic.SysUser;

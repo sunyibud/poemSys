@@ -3,16 +3,14 @@ package com.poemSys.user.service.userInfo;
 import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
-import com.poemSys.common.service.general.UpdateRedisLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.UpdateRedisLoginSysUserService;
 import com.poemSys.user.bean.Form.ChangePasswordForm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Service

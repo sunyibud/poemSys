@@ -7,7 +7,7 @@ import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.entity.connection.ConUserPost;
 import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysPostService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.Form.AddPostForm;
 import com.poemSys.user.service.general.ImageUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +39,15 @@ public class AddPostService
         String content = addPostForm.getContent();
         MultipartFile coverImage = addPostForm.getCoverImage();
         String uuid = UUID.randomUUID().toString();
+        String imagePath = null;
 
-        Result uploadRes = imageUploadService.upload(coverImage, "/images/forum");
-        if(uploadRes.getCode()!=0)
-            return uploadRes;
-        String imagePath = uploadRes.getData().toString();
+        if(coverImage!=null)
+        {
+            Result uploadRes = imageUploadService.upload(coverImage, "/images/forum/");
+            if (uploadRes.getCode() != 0)
+                return uploadRes;
+            imagePath = uploadRes.getData().toString();
+        }
         sysPostService.save(new SysPost(title, content, LocalDateTime.now(), 0,
                 0, imagePath, uuid));
         SysPost sysPost = sysPostService.getOne(new QueryWrapper<SysPost>()

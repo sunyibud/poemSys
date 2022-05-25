@@ -22,8 +22,7 @@ public class ImageUploadService
      */
     public Result upload(MultipartFile file, String filePath)
     {
-        String basePath = "/root/dist";
-        filePath += basePath;
+        String foldPath = "/root/dist" + filePath;
         if (file==null)
             return new Result(1, "文件上传为空或接收异常", null);
         try {
@@ -31,7 +30,7 @@ public class ImageUploadService
             long megabytes = bytes / 1024 / 1024;
             if(megabytes>10)
                 return new Result(-3, "图片大小不能超过10M", null);
-            File folder = new File(filePath);
+            File folder = new File(foldPath);
             if(!folder.exists())
             {
                 if(!folder.mkdirs())

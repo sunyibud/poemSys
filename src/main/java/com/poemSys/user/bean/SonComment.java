@@ -15,8 +15,8 @@ public class SonComment implements Serializable
     private static final long serialVersionUID = 1L;
 
     private long id;
-    private long ownerUserId;
-    private long toUserId;
+    private UserInfo ownerUserInfo;
+    private UserInfo toUserInfo;
     private String content;
     private LocalDateTime createdTime;
     private boolean isOwner;

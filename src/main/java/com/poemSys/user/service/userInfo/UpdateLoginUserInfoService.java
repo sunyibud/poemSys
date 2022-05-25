@@ -1,20 +1,16 @@
 package com.poemSys.user.service.userInfo;
 
-import cn.hutool.json.JSONUtil;
 import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
-import com.poemSys.common.service.general.UpdateRedisLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.UpdateRedisLoginSysUserService;
 import com.poemSys.common.utils.JwtUtils;
 import com.poemSys.common.utils.RedisUtil;
 import com.poemSys.user.bean.Form.UpdateUserInfoForm;
-import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class UpdateLoginUserInfoService

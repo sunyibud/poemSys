@@ -1,7 +1,7 @@
 package com.poemSys.common.security;
 
 import cn.hutool.core.util.StrUtil;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.common.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;

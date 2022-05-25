@@ -6,7 +6,7 @@ import com.poemSys.common.entity.basic.SysMessage;
 import com.poemSys.common.service.ConMessageLetterService;
 import com.poemSys.common.service.SysLetterService;
 import com.poemSys.common.service.SysMessageService;
-import com.poemSys.common.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.GetLoginSysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

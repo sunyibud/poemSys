@@ -12,7 +12,7 @@ import com.poemSys.common.service.SysPoemService;
 import com.poemSys.common.service.SysTagService;
 import com.poemSys.user.bean.Form.PageByIdForm;
 import com.poemSys.user.bean.PoemPageAns;
-import com.poemSys.user.service.general.PoemPageAnsPro;
+import com.poemSys.user.service.general.PoemPageAnsProService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class GetPoemsByTagService
     SysPoemService sysPoemService;
 
     @Autowired
-    PoemPageAnsPro poemPageAnsPro;
+    PoemPageAnsProService poemPageAnsProService;
 
     public Result get(PageByIdForm pageByIdForm)
     {
@@ -47,9 +47,7 @@ public class GetPoemsByTagService
         List<Long> poemIds = new ArrayList<>();
         List<ConTagPoem> list = conTagPoemService.list(new QueryWrapper<ConTagPoem>()
                 .eq("tag_id", tagId));
-        list.forEach(l -> {
-            poemIds.add(l.getPoemId());
-        });
+        list.forEach(l -> poemIds.add(l.getPoemId()));
         if (poemIds.isEmpty())
             return new Result(0, "分页获取类型为"+tagName+"的古诗词列表成功,共0条", new PageListRes(
                     0L, size, page, 0L, null
@@ -57,7 +55,7 @@ public class GetPoemsByTagService
         Page<SysPoem> poemPage = new Page<>(page, size);
         Page<SysPoem> pageAns = sysPoemService.page(poemPage,
                 new QueryWrapper<SysPoem>().in("id", poemIds));
-        PoemPageAns res = poemPageAnsPro.pro(pageAns);
+        PoemPageAns res = poemPageAnsProService.pro(pageAns);
         return new Result(0, "分页获取类型为"+tagName+"的古诗词列表成功,共"+pageAns.getTotal()+"条", res);
     }
 }
