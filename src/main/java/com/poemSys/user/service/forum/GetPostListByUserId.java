@@ -7,7 +7,7 @@ import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.entity.connection.ConUserPost;
 import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysPostService;
-import com.poemSys.user.service.general.GetLoginSysUserService;
+import com.poemSys.user.bean.Form.PageByIdForm;
 import com.poemSys.user.bean.PostPageAns;
 import com.poemSys.user.service.general.PostPageAnsProService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,34 +17,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class GetMyPostService
+public class GetPostListByUserId
 {
     @Autowired
     ConUserPostService conUserPostService;
 
     @Autowired
-    GetLoginSysUserService getLoginSysUserService;
+    SysPostService sysPostService;
 
     @Autowired
     PostPageAnsProService postPageAnsProService;
 
-    @Autowired
-    SysPostService sysPostService;
-    public Result get(int page, int size)
+    public Result get(PageByIdForm pageByIdForm)
     {
-        Long userId = getLoginSysUserService.getSysUser().getId();
+        long userId = pageByIdForm.getId();
+        long page = pageByIdForm.getPage();
+        long size = pageByIdForm.getSize();
 
-        List<ConUserPost> conList = conUserPostService.list(new QueryWrapper<ConUserPost>()
+        List<ConUserPost> con = conUserPostService.list(new QueryWrapper<ConUserPost>()
                 .eq("user_id", userId));
-        if(conList.isEmpty())
-            return new Result(0, "用户"+userId+"(id)没有发布帖子", null);
-
+        if(con.isEmpty())
+            return new Result(0, "获取用户"+userId+"(id)的帖子成功,共0条", 0);
         List<Long> postIds = new ArrayList<>();
-        conList.forEach(c-> postIds.add(c.getPostId()));
+        con.forEach(c-> postIds.add(c.getPostId()));
+
         Page<SysPost> postPage = new Page<>(page, size);
         Page<SysPost> pageAns = sysPostService.page(postPage, new QueryWrapper<SysPost>()
-                .in("id", postIds).orderByDesc("created_time"));
-        PostPageAns res = postPageAnsProService.pro(pageAns);
-        return new Result(0, "分页获取我的帖子列表成功", res);
+                .in("post_id", postIds).orderByDesc("created_time"));
+
+        PostPageAns finalAns = postPageAnsProService.pro(pageAns);
+
+        return new Result(0, "获取用户"+userId+"(id)的帖子成功,共"+finalAns.getTotal()+"条", finalAns);
     }
 }

@@ -1,5 +1,6 @@
 package com.poemSys.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poemSys.admin.bean.Form.IdForm;
 import com.poemSys.common.bean.Result;
@@ -7,6 +8,7 @@ import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.service.SysPostService;
 import com.poemSys.user.bean.Form.AddPostForm;
 import com.poemSys.user.bean.Form.AddCommentForm;
+import com.poemSys.user.bean.Form.PageByIdForm;
 import com.poemSys.user.bean.Form.UpdateMyPostForm;
 import com.poemSys.user.bean.PostPageAns;
 import com.poemSys.user.service.forum.*;
@@ -69,12 +71,22 @@ public class ForumController
     @Autowired
     GetMyFollowPost getMyFollowPost;
 
+    @Autowired
+    GetPostListByUserId getPostListByUserId;
+
+    @Autowired
+    GetFollowListByUserIdService getFollowListByUserIdService;
+
+    @Autowired
+    GetFansListByUserIdService getFansListByUserIdService;
+
     @PostMapping("/partPostList/{page}/{size}")
     public Result partPostList(@PathVariable("page") Integer page,
                                @PathVariable("size") Integer size)
     {
         Page<SysPost> postPage = new Page<>(page, size);
-        Page<SysPost> pageAns = sysPostService.page(postPage);
+        Page<SysPost> pageAns = sysPostService.page(postPage,
+                new QueryWrapper<SysPost>().orderByDesc("created_time"));
         PostPageAns res = postPageAnsProService.pro(pageAns);
         return new Result(0, "分页获取帖子列表成功", res);
     }
@@ -162,5 +174,26 @@ public class ForumController
                                @PathVariable("size") Integer size)
     {
         return getMyFollowPost.get(page, size);
+    }
+
+    /**
+     * 根据用户id分页获取帖子
+     */
+    @PostMapping("/getPostListByUserId")
+    public Result getPostListByUserId(PageByIdForm pageByIdForm)
+    {
+        return getPostListByUserId.get(pageByIdForm);
+    }
+
+    @PostMapping("/getFollowListByUserId")
+    public Result getFollowListByUserId(PageByIdForm pageByIdForm)
+    {
+        return getFollowListByUserIdService.get(pageByIdForm);
+    }
+
+    @PostMapping("/getFansListByUserId")
+    public Result getFansListByUserId(PageByIdForm pageByIdForm)
+    {
+        return getFansListByUserIdService.get(pageByIdForm);
     }
 }

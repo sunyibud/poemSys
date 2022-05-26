@@ -9,6 +9,7 @@ import com.poemSys.common.entity.connection.ConMessageLetter;
 import com.poemSys.common.service.ConMessageLetterService;
 import com.poemSys.common.service.SysLetterService;
 import com.poemSys.common.service.SysMessageService;
+import com.poemSys.user.service.forum.ContentCheckService;
 import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.Form.SendLetterForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,18 @@ public class SendLetterService
     @Autowired
     SysLetterService sysLetterService;
 
+    @Autowired
+    ContentCheckService contentCheckService;
+
     public Result send(SendLetterForm sendLetterForm)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
         long toUserId = sendLetterForm.getToUserId();
         String content = sendLetterForm.getContent();
+
+        //替换消息内容敏感词
+        content = contentCheckService.KMPReplace(content);
+
         //查看是否以前发过消息，表中是否已经存在私信数据(收发双方都需要存在),不存在就新建
         SysMessage mySysMessage = sysMessageService.getOne(new QueryWrapper<SysMessage>()
                 .eq("user_id", userId).eq("type", 5)

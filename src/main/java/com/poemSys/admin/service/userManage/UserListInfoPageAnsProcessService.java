@@ -12,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class UserInfoPageAnsProcessService
+public class UserListInfoPageAnsProcessService
 {
     public PageListRes pro(Page<SysUser> page)
     {
@@ -20,16 +20,13 @@ public class UserInfoPageAnsProcessService
 
         List<SysUser> records = page.getRecords();
 
-        records.forEach(r -> {
-            list.add(new UserListInfo(r.getId(), r.getUsername(),
-                    r.getSignature(), r.getSex(), r.getEmail(),
-                    r.getTelephone(), r.getHeadPath(), r.getRegisterTime(),
-                    r.isIdentify(), r.isState(), r.getUnlockTime()));
-        });
+        records.forEach(r -> list.add(new UserListInfo(r.getId(), r.getUsername(),
+                r.getSignature(), r.getSex(), r.getEmail(),
+                r.getTelephone(), r.getHeadPath(), r.getRegisterTime(),
+                r.isIdentify(), r.isState(), r.getUnlockTime())));
 
-        PageListRes ans = new PageListRes(page.getTotal(),
+        return new PageListRes(page.getTotal(),
                 page.getSize(), page.getCurrent(), page.getPages(),
                 list);
-        return ans;
     }
 }

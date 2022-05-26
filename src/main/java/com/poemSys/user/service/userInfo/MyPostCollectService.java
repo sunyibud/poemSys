@@ -46,7 +46,7 @@ public class MyPostCollectService
                     0L, size.longValue(), page.longValue(), 0L, null
             ));
         Page<SysPost> pageAns = sysPostService.page(postPage, new QueryWrapper<SysPost>()
-                .in("id", postIds));
+                .in("id", postIds).orderByDesc("created_time"));
         PostPageAns finalAns = postPageAnsProService.pro(pageAns);
         return new Result(0, "分页获取用户收藏帖子列表成功,共"+finalAns.getTotal()+"条", finalAns);
     }

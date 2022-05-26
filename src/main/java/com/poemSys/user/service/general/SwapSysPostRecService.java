@@ -55,8 +55,10 @@ public class SwapSysPostRecService
 
         ConUserPost con = conUserPostService.getOne(new QueryWrapper<ConUserPost>()
                 .eq("post_id", sysPost.getId()));
-        SysUser postUser = sysUserService.getById(con.getUserId());
-        UserInfo postUserInfo = swapUserInfoService.swap(postUser);
+        long postOwnerId = con.getUserId();
+
+        SysUser postOwner = sysUserService.getById(postOwnerId);
+        UserInfo postUserInfo = swapUserInfoService.swap(postOwner);
 
         return new SysPostRes(sysPost.getId(), postUserInfo, sysPost.getTitle(), sysPost.getContent(),
                 sysPost.getCreatedTime(), sysPost.getCollectNum(), sysPost.getLikeNum(),

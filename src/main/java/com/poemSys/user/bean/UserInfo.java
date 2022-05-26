@@ -25,4 +25,6 @@ public class UserInfo implements Serializable
     private String headPath;
     private long followNum;
     private long fansNum;
+    private long postNum;
+    private boolean isFollow;
 }

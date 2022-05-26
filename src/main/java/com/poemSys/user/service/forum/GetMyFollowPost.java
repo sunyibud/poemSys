@@ -60,7 +60,7 @@ public class GetMyFollowPost
 
         Page<SysPost> postPage = new Page<>(page, size);
         Page<SysPost> pageAns = sysPostService.page(postPage, new QueryWrapper<SysPost>()
-                .in("id", postIds));
+                .in("id", postIds).orderByDesc("created_time"));
         PostPageAns finalAns = postPageAnsProService.pro(pageAns);
 
         return new Result(0, "获取关注用户帖子成功,共"+finalAns.getTotal()+"条数据", finalAns);

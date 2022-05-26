@@ -16,13 +16,13 @@ public class SearchUserService
     SysUserService sysUserService;
 
     @Autowired
-    UserInfoPageAnsProcessService userInfoPageAnsProcessService;
+    UserListInfoPageAnsProcessService userListInfoPageAnsProcessService;
     
     public PageListRes search(SearchForm searchUserForm)
     {
         Page<SysUser> userPage = sysUserService.searchByKeyWord(searchUserForm.getKeyWord(),
                 searchUserForm.getPage(), searchUserForm.getSize());
 
-        return userInfoPageAnsProcessService.pro(userPage);
+        return userListInfoPageAnsProcessService.pro(userPage);
     }
 }

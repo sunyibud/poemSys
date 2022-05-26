@@ -2,7 +2,7 @@ package com.poemSys.admin.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poemSys.admin.bean.Form.*;
-import com.poemSys.admin.service.userManage.UserInfoPageAnsProcessService;
+import com.poemSys.admin.service.userManage.UserListInfoPageAnsProcessService;
 import com.poemSys.admin.service.userManage.SearchUserService;
 import com.poemSys.admin.service.userManage.UpdateUserInfoService;
 import com.poemSys.admin.bean.PageListRes;
@@ -37,7 +37,7 @@ public class UserManageController
     GetLoginSysUserService getLoginSysUserService;
 
     @Autowired
-    UserInfoPageAnsProcessService userInfoPageAnsProcessService;
+    UserListInfoPageAnsProcessService userListInfoPageAnsProcessService;
 
     @Autowired
     SearchUserService searchUserService;
@@ -52,7 +52,7 @@ public class UserManageController
         //分页查询结果
         Page<SysUser> pageAns = sysUserService.page(userPage);
         //重新封装查询结果
-        PageListRes finalAns = userInfoPageAnsProcessService.pro(pageAns);
+        PageListRes finalAns = userListInfoPageAnsProcessService.pro(pageAns);
         return new Result(0, "用户部分列表获取成功", finalAns);
     }
 

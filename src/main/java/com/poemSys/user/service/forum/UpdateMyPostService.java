@@ -24,6 +24,9 @@ public class UpdateMyPostService
     @Autowired
     ConUserPostService conUserPostService;
 
+    @Autowired
+    ContentCheckService contentCheckService;
+
     public Result update(UpdateMyPostForm updateMyPostForm)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
@@ -43,9 +46,19 @@ public class UpdateMyPostService
             return new Result(-2, "权限不足,无法编辑非本人帖子,id:"+postId, null);
 
         if(!StringUtils.isBlank(title))
+        {
+            String titleCheckRes = contentCheckService.KMPCheckout(title);
+            if(!titleCheckRes.equals("pass"))
+                return new Result(1, "编辑失败,您的帖子标题含有敏感词:"+titleCheckRes, null);
             sysPost.setTitle(title);
+        }
         if(!StringUtils.isBlank(content))
+        {
+            String contentCheckRes = contentCheckService.KMPCheckout(content);
+            if(!contentCheckRes.equals("pass"))
+                return new Result(1, "编辑失败,您的帖子内容含有敏感词:"+contentCheckRes, null);
             sysPost.setContent(content);
+        }
         if(!StringUtils.isBlank(coverImage))
             sysPost.setCoverImage(coverImage);
 

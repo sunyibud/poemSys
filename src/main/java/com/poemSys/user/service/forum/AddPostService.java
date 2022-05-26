@@ -31,6 +31,9 @@ public class AddPostService
     @Autowired
     ImageUploadService imageUploadService;
 
+    @Autowired
+    ContentCheckService contentCheckService;
+
     public Result add(AddPostForm addPostForm)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
@@ -41,6 +44,16 @@ public class AddPostService
         String uuid = UUID.randomUUID().toString();
         String imagePath = null;
 
+        String titleCheckRes = contentCheckService.KMPCheckout(title);
+        String contentCheckRes = contentCheckService.KMPCheckout(content);
+        if(!titleCheckRes.equals("pass")||!contentCheckRes.equals("pass"))
+        {
+            if(titleCheckRes.equals("pass"))
+                titleCheckRes = "";
+            if(contentCheckRes.equals("pass"))
+                contentCheckRes = "";
+            return new Result(1, "帖子提交失败,您的提交内容含有敏感词:" + titleCheckRes+" "+contentCheckRes, null);
+        }
         if(coverImage!=null)
         {
             Result uploadRes = imageUploadService.upload(coverImage, "/images/forum/");

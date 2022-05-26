@@ -37,12 +37,18 @@ public class AddCommentService
     @Autowired
     ConPostCommentService conPostCommentService;
 
+    @Autowired
+    ContentCheckService contentCheckService;
+
     public Result comment(AddCommentForm addCommentForm)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
         int type = addCommentForm.getType();
         String content = addCommentForm.getContent();
         long id = addCommentForm.getId(); //type为1时表示postId, 2表示commentId
+
+        //敏感词替换
+        content = contentCheckService.KMPReplace(content);
 
         //推送消息
         if(type==1)

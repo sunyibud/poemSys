@@ -5,7 +5,6 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://120.27.245.194:3306/poetry
-#    url: jdbc:mysql://localhost:3306/poetry
     username: admin
     password: qwertyuiop
 
@@ -54,8 +53,8 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
   servlet:
     multipart:
-      max-file-size: 20
-      max-request-size: 20
+      max-file-size: 20971520
+#      max-request-size: 20971520
 
 
 #  security:

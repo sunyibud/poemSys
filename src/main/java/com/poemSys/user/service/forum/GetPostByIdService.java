@@ -7,6 +7,7 @@ import com.poemSys.common.entity.basic.SysPost;
 import com.poemSys.common.entity.connection.ConUserPost;
 import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysPostService;
+import com.poemSys.user.bean.UserInfo;
 import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.SysPostRes;
 import com.poemSys.user.service.general.SwapSysPostRecService;
@@ -50,8 +51,8 @@ public class GetPostByIdService
             isOwner = true;
 
         SysPostRes res = swapSysPostRecService.swap(sysPost);
-        FinalRes finalRes = new FinalRes(res.getId(), res.getTitle(), res.getContent(),
-                res.getCreatedTime(), res.getCollectNum(), res.getLikeNum(),
+        FinalRes finalRes = new FinalRes(res.getId(), res.getOwnerUserInfo(), res.getTitle(),
+                res.getContent(), res.getCreatedTime(), res.getCollectNum(), res.getLikeNum(),
                 res.getCoverImage(), res.isLike(), res.isCollect(), isOwner);
         return new Result(0, "帖子信息获取成功，id:" + res.getId(), finalRes);
     }
@@ -64,6 +65,7 @@ public class GetPostByIdService
         protected static final long serialVersionUID = 1L;
 
         protected long id;
+        private UserInfo ownerUserInfo;
         protected String title;
         protected String content;
         protected LocalDateTime createdTime;
