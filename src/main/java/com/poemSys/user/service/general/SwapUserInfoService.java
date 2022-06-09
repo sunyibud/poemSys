@@ -25,8 +25,15 @@ public class SwapUserInfoService
     @Autowired
     ConUserFollowService conUserFollowService;
 
+    /**
+     * @param sysUser 被转化的sysUser
+     * @return 传入的sysUser被转化后的UserInfo
+     */
     public UserInfo swap(SysUser sysUser)
     {
+        if(sysUser == null)
+            return null;
+
         Long loginUserId = getLoginSysUserService.getSysUser().getId();
         Long userId = sysUser.getId();
 

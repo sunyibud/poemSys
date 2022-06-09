@@ -32,7 +32,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         int code=1;
         if(exception.getMessage().equals("Bad credentials"))
             msg="用户名或密码有误";
-        else if(exception.getMessage().equals("服务器异常, 验证码验证失败"))
+        else if(exception.getMessage().equals("服务器异常, 登录验证失败"))
         {
             code = -1;
         }

@@ -4,6 +4,8 @@ import cn.hutool.json.JSONUtil;
 import com.poemSys.common.bean.Result;
 import com.poemSys.common.service.SysUserService;
 import com.poemSys.common.utils.JwtUtils;
+import com.poemSys.user.bean.WebsocketMsg;
+import com.poemSys.user.service.general.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -27,6 +29,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler
 
     @Autowired
     SysUserService sysUserService;
+
+    @Autowired
+    WebSocketService webSocketService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException

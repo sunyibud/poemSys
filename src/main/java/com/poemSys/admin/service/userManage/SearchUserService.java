@@ -20,7 +20,7 @@ public class SearchUserService
     
     public PageListRes search(SearchForm searchUserForm)
     {
-        Page<SysUser> userPage = sysUserService.searchByKeyWord(searchUserForm.getKeyWord(),
+        Page<SysUser> userPage = sysUserService.searchByKeyWord(searchUserForm.getKeyword(),
                 searchUserForm.getPage(), searchUserForm.getSize());
 
         return userListInfoPageAnsProcessService.pro(userPage);

@@ -4,7 +4,7 @@ import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
 import com.poemSys.user.service.general.GetLoginSysUserService;
-import com.poemSys.user.service.general.UpdateRedisLoginSysUserService;
+import com.poemSys.user.service.general.UpdateRedisSysUserService;
 import com.poemSys.common.utils.JwtUtils;
 import com.poemSys.common.utils.RedisUtil;
 import com.poemSys.user.bean.Form.UpdateUserInfoForm;
@@ -28,7 +28,7 @@ public class UpdateLoginUserInfoService
     RedisUtil redisUtil;
 
     @Autowired
-    UpdateRedisLoginSysUserService updateRedisLoginSysUserService;
+    UpdateRedisSysUserService updateRedisSysUserService;
 
     public Result update(UpdateUserInfoForm newUserInfo)
     {
@@ -56,7 +56,7 @@ public class UpdateLoginUserInfoService
 
         sysUserService.updateById(sysUser);
 
-        updateRedisLoginSysUserService.update();
+        updateRedisSysUserService.update();
         return new Result(0, "用户信息修改成功", null);
     }
 }

@@ -8,9 +8,11 @@ import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysPostService;
 import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.Form.UpdateMyPostForm;
+import com.poemSys.user.service.general.ImageUploadService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UpdateMyPostService
@@ -27,13 +29,17 @@ public class UpdateMyPostService
     @Autowired
     ContentCheckService contentCheckService;
 
+    @Autowired
+    ImageUploadService imageUploadService;
+
     public Result update(UpdateMyPostForm updateMyPostForm)
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
         long postId = updateMyPostForm.getId();
         String title = updateMyPostForm.getTitle();
         String content = updateMyPostForm.getContent();
-        String coverImage = updateMyPostForm.getCoverImage();
+        MultipartFile coverImage = updateMyPostForm.getCoverImage();
+        String imagePath;
 
         SysPost sysPost = sysPostService.getById(postId);
         if(sysPost==null)
@@ -59,9 +65,14 @@ public class UpdateMyPostService
                 return new Result(1, "编辑失败,您的帖子内容含有敏感词:"+contentCheckRes, null);
             sysPost.setContent(content);
         }
-        if(!StringUtils.isBlank(coverImage))
-            sysPost.setCoverImage(coverImage);
-
+        if(coverImage!=null)
+        {
+            Result uploadRes = imageUploadService.upload(coverImage, "/images/forum/");
+            if (uploadRes.getCode() != 0)
+                return uploadRes;
+            imagePath = uploadRes.getData().toString();
+            sysPost.setCoverImage(imagePath);
+        }
         sysPostService.updateById(sysPost);
         return new Result(0, "帖子修改成功,id:"+postId, null);
     }

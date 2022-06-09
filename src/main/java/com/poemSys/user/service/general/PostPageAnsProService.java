@@ -14,13 +14,13 @@ import java.util.List;
 public class PostPageAnsProService
 {
     @Autowired
-    SwapSysPostRecService swapSysPostRecService;
+    SwapSysPostResService swapSysPostResService;
 
     public PostPageAns pro(Page<SysPost> pageAns)
     {
         List<SysPost> records = pageAns.getRecords();
         List<SysPostRes> newRecords = new ArrayList<>();
-        records.forEach(r-> newRecords.add(swapSysPostRecService.swap(r)));
+        records.forEach(r-> newRecords.add(swapSysPostResService.swap(r)));
         return new PostPageAns(pageAns.getTotal(), pageAns.getSize(),
                 pageAns.getCurrent(), pageAns.getPages(), newRecords);
     }

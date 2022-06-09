@@ -10,7 +10,7 @@ import com.poemSys.common.service.SysPostService;
 import com.poemSys.user.bean.UserInfo;
 import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.user.bean.SysPostRes;
-import com.poemSys.user.service.general.SwapSysPostRecService;
+import com.poemSys.user.service.general.SwapSysPostResService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +33,7 @@ public class GetPostByIdService
     GetLoginSysUserService getLoginSysUserService;
 
     @Autowired
-    SwapSysPostRecService swapSysPostRecService;
+    SwapSysPostResService swapSysPostResService;
 
     public Result get(IdForm idForm)
     {
@@ -50,7 +50,7 @@ public class GetPostByIdService
         if(con!=null)
             isOwner = true;
 
-        SysPostRes res = swapSysPostRecService.swap(sysPost);
+        SysPostRes res = swapSysPostResService.swap(sysPost);
         FinalRes finalRes = new FinalRes(res.getId(), res.getOwnerUserInfo(), res.getTitle(),
                 res.getContent(), res.getCreatedTime(), res.getCollectNum(), res.getLikeNum(),
                 res.getCoverImage(), res.isLike(), res.isCollect(), isOwner);

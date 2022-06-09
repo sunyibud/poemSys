@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionAdvice
 {
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(value = IllegalArgumentException.class)
     public Result handler(IllegalArgumentException e)
     {
@@ -27,7 +27,7 @@ public class GlobalExceptionAdvice
         return new Result(-1, e.getMessage(), null);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(value = AccessDeniedException.class)
     public Result handler(AccessDeniedException e)
     {
@@ -37,7 +37,7 @@ public class GlobalExceptionAdvice
     }
 
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public Result handler(HttpMessageNotReadableException e)
     {
@@ -46,16 +46,16 @@ public class GlobalExceptionAdvice
         return new Result(-3, "请求数据格式不正确", e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(value = RuntimeException.class)
     public Result handler(RuntimeException e)
     {
         log.error("运行时异常："+e.getMessage());
-        e.printStackTrace();
+//        e.printStackTrace();
         return new Result(-1, e.getMessage(), null);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public Result handler(HttpRequestMethodNotSupportedException e)
     {
@@ -63,7 +63,7 @@ public class GlobalExceptionAdvice
         return new Result(-1, "请求方法不支持", null);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(value = RedisConnectionFailureException.class)
     public Result handler(RedisConnectionFailureException e)
     {

@@ -4,7 +4,7 @@ import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
 import com.poemSys.user.service.general.GetLoginSysUserService;
-import com.poemSys.user.service.general.UpdateRedisLoginSysUserService;
+import com.poemSys.user.service.general.UpdateRedisSysUserService;
 import com.poemSys.user.service.general.ImageUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class UploadHeadIconService
     GetLoginSysUserService getLoginSysUserService;
 
     @Autowired
-    UpdateRedisLoginSysUserService updateRedisLoginSysUserService;
+    UpdateRedisSysUserService updateRedisSysUserService;
 
     public Result upload(MultipartFile file)
     {
@@ -33,7 +33,7 @@ public class UploadHeadIconService
             SysUser sysUser = getLoginSysUserService.getSysUser();
             sysUser.setHeadPath(result.getData().toString());
             sysUserService.updateById(sysUser);
-            updateRedisLoginSysUserService.update();
+            updateRedisSysUserService.update();
         }
         return result;
     }

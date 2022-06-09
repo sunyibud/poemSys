@@ -4,7 +4,7 @@ import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
 import com.poemSys.user.service.general.GetLoginSysUserService;
-import com.poemSys.user.service.general.UpdateRedisLoginSysUserService;
+import com.poemSys.user.service.general.UpdateRedisSysUserService;
 import com.poemSys.user.bean.Form.ChangePasswordForm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +26,7 @@ public class ChangePasswordService
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    UpdateRedisLoginSysUserService updateRedisLoginSysUserService;
+    UpdateRedisSysUserService updateRedisSysUserService;
 
     public Result change(ChangePasswordForm passwordForm)
     {
@@ -42,7 +42,7 @@ public class ChangePasswordService
         String encodePassword = bCryptPasswordEncoder.encode(newPassword);
         sysUser.setPassword(encodePassword);
         sysUserService.updateById(sysUser);
-        updateRedisLoginSysUserService.update();
+        updateRedisSysUserService.update();
         return new Result(0, "用户密码修改成功", sysUser.getUsername());
     }
 }

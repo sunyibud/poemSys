@@ -4,13 +4,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.poemSys.common.entity.basic.SysUser;
 
+import java.io.Serializable;
 import java.util.List;
 
 public interface SysUserService extends IService<SysUser>
 {
     SysUser getSysUserByUsername(String username);
-
-    SysUser getSysUserById(Long userId);
 
     String getUserAuthorityInfo(Long userId);
 
@@ -25,4 +24,8 @@ public interface SysUserService extends IService<SysUser>
     Page<SysUser> searchByKeyWord(String keyWord, Long page, Long size);
 
     boolean isEmailExist(String emailAddress);
+
+    SysUser getSysUserById(Serializable id);
+
+    void clearRedisSysUserById(Serializable id);
 }

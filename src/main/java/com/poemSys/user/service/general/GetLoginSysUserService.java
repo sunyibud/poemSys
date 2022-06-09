@@ -40,16 +40,16 @@ public class GetLoginSysUserService
 
 
         //查看redis中是否缓存
-        if(redisUtil.hasKey("LoginSysUser:"+id))
+        if(redisUtil.hasKey("sysUser:"+id))
         {
-            String jsonStr = (String) redisUtil.get("LoginSysUser:" + id);
+            String jsonStr = (String) redisUtil.get("sysUser:" + id);
             return JSONUtil.toBean(jsonStr, SysUser.class);
         }
         else
         {
             SysUser sysUser = sysUserService.getSysUserById(id);
             //将对象转化成json再存入redis
-            redisUtil.set("LoginUserInfo:" + id,
+            redisUtil.set("sysUser:" + id,
                     JSONUtil.toJsonStr(sysUser), 60 * 60);//60分钟
             return sysUser;
         }

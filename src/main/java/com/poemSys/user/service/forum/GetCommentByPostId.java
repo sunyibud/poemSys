@@ -10,7 +10,7 @@ import com.poemSys.common.service.SysCommentService;
 import com.poemSys.common.service.SysPostService;
 import com.poemSys.common.service.SysUserService;
 import com.poemSys.user.service.general.GetLoginSysUserService;
-import com.poemSys.user.bean.FatherComment;
+import com.poemSys.user.bean.LevelOneComment;
 import com.poemSys.user.bean.SonComment;
 import com.poemSys.user.service.general.SwapUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,16 +62,18 @@ public class GetCommentByPostId
                 .in("id", commentIds));
 
 
-        List<FatherComment> res = new ArrayList<>();
-        Map<Long, Integer> map = new HashMap<>();   //fatherComment.id与res下标映射的哈希表
+        List<LevelOneComment> res = new ArrayList<>();
+        Map<Integer, List<Long>> map = new HashMap<>();   //res下标与某一级评论(包含本身)及其下的所有二级评论id列表映射的哈希表
         comments.forEach(c->{//将父评论加入到返回结果列表中
             if(c.getType()==1)
             {
                 boolean isOwner = false;
                 if(c.getOwnerUserId()==userId)
                     isOwner = true;
-                map.put(c.getId(), res.size());
-                res.add(new FatherComment(c.getId(),
+                List<Long> idList = new ArrayList<>();
+                idList.add(c.getId());
+                map.put(res.size(), idList);
+                res.add(new LevelOneComment(c.getId(),
                         swapUserInfoService.swap(sysUserService.getById(c.getOwnerUserId())),
                         c.getContent(), c.getCreatedTime(), isOwner, new ArrayList<>()));
             }
@@ -79,15 +81,22 @@ public class GetCommentByPostId
         comments.forEach(c->{//添加子评论到返回结果列表里父评论的List中
             if(c.getType()==2)
             {
-                boolean isOwner = false;
-                if(c.getOwnerUserId()==userId)
-                    isOwner = true;
                 long fatherCommentId = c.getPostOrFather();
-                FatherComment fatherComment = res.get(map.get(fatherCommentId));
-                fatherComment.getSonComments().add(new SonComment(c.getId(),
-                        swapUserInfoService.swap(sysUserService.getById(c.getOwnerUserId())),
-                        fatherComment.getOwnerUserInfo(),
-                        c.getContent(), c.getCreatedTime(), isOwner));
+                long fatherCommentOwnerUserId = sysCommentService.getById(fatherCommentId).getOwnerUserId();
+                map.forEach((ind, list)->{
+                    if(list.contains(fatherCommentId))
+                    {
+                        list.add(c.getId());
+                        LevelOneComment levelOneComment = res.get(ind);
+                        boolean isOwner = false;
+                        if(c.getOwnerUserId()==userId)
+                            isOwner = true;
+                        levelOneComment.getSonComments().add(new SonComment(c.getId(),
+                                swapUserInfoService.swap(sysUserService.getById(c.getOwnerUserId())),
+                                swapUserInfoService.swap(sysUserService.getById(fatherCommentOwnerUserId)),
+                                c.getContent(), c.getCreatedTime(), isOwner));
+                    }
+                });
             }
         });
         return new Result(0, "帖子"+postId+"(id)的评论获取成功", res);

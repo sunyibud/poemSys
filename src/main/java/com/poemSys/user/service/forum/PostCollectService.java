@@ -11,7 +11,9 @@ import com.poemSys.common.service.ConUserPostCollectService;
 import com.poemSys.common.service.ConUserPostService;
 import com.poemSys.common.service.SysMessageService;
 import com.poemSys.common.service.SysPostService;
+import com.poemSys.user.bean.WebsocketMsg;
 import com.poemSys.user.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.WebSocketService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,9 +42,12 @@ public class PostCollectService
     @Autowired
     ConUserPostService conUserPostService;
 
+    @Autowired
+    WebSocketService webSocketService;
+
     public Result collect(IdForm idForm)
     {
-        Long userId = getLoginSysUserService.getSysUser().getId();
+        Long loginUserId = getLoginSysUserService.getSysUser().getId();
         long postId = idForm.getId();
 
         SysPost sysPost = sysPostService.getById(postId);
@@ -50,25 +55,38 @@ public class PostCollectService
             return new Result(1, "帖子不存在,id:"+postId, null);
 
         ConUserPostCollect con = conUserPostCollectService.getOne(new QueryWrapper<ConUserPostCollect>()
-                .eq("user_id", userId).eq("post_id", postId));
+                .eq("user_id", loginUserId).eq("post_id", postId));
         boolean isCollect = false;
-        if(con==null)   //收藏
+        if(con==null)   //帖子收藏
         {
-            conUserPostCollectService.save(new ConUserPostCollect(userId, postId));
+            conUserPostCollectService.save(new ConUserPostCollect(loginUserId, postId));
             isCollect = true;
             //推送消息
             ConUserPost con1 = conUserPostService.getOne(new QueryWrapper<ConUserPost>()
                     .eq("post_id", postId));
             long postOwnerId = con1.getUserId();
-            sysMessageService.save(new SysMessage(postOwnerId, false, 3, postId, 0, "用户收藏了你的帖子", 0,
-                    true, LocalDateTime.now(), UUID.randomUUID().toString(), 0));
+            //（如果存在同一个用户用户为同一个帖子的收藏消息，无需新建，改变receiveTime和state）
+            SysMessage one = sysMessageService.getOne(new QueryWrapper<SysMessage>()
+                    .eq("user_id", postOwnerId).eq("type", 3)
+                    .eq("other_user_id", loginUserId)
+                    .eq("post_id", postId).eq("content", "用户收藏了你的帖子"));
+            if(one==null)
+                sysMessageService.save(new SysMessage(postOwnerId, false, 3, postId, "用户收藏了你的帖子",
+                        loginUserId, true, LocalDateTime.now(), UUID.randomUUID().toString(), 0));
+            else
+            {
+                one.setReceiveTime(LocalDateTime.now());
+                one.setState(false);
+                sysMessageService.updateById(one);
+            }
+            webSocketService.sendMessageOnServer(postOwnerId, new WebsocketMsg(3, 0, postOwnerId, "用户"+loginUserId+"收藏了你的帖子"));
         }
-        else
+        else    //取消收藏
             conUserPostCollectService.removeById(con);
 
         int collectNum = sysPostService.getById(postId).getCollectNum();
         NewState newState = new NewState(isCollect, collectNum);
-        return new Result(0, "用户"+userId+"(id)收藏/取消收藏帖子"+postId+"(id)成功", newState);
+        return new Result(0, "用户"+loginUserId+"(id)收藏/取消收藏帖子"+postId+"(id)成功", newState);
     }
 
     @Data

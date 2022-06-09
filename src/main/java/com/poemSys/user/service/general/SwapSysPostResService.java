@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SwapSysPostRecService
+public class SwapSysPostResService
 {
     @Autowired
     GetLoginSysUserService getLoginSysUserService;
@@ -39,10 +39,10 @@ public class SwapSysPostRecService
     public SysPostRes swap(SysPost sysPost)
     {
         boolean isLike = false, isCollect = false;
-        SysUser sysUser = getLoginSysUserService.getSysUser();
-        if(sysUser!=null)
+        SysUser loginUser = getLoginSysUserService.getSysUser();
+        if(loginUser!=null)
         {
-            long userId = sysUser.getId();
+            long userId = loginUser.getId();
             ConUserPostLike conLike = conUserPostLikeService.getOne(new QueryWrapper<ConUserPostLike>()
                     .eq("user_id", userId).eq("post_id", sysPost.getId()));
             ConUserPostCollect conCollect = conUserPostCollectService.getOne(new QueryWrapper<ConUserPostCollect>()
@@ -53,11 +53,13 @@ public class SwapSysPostRecService
                 isCollect = true;
         }
 
+        long postOwnerId = 0;
         ConUserPost con = conUserPostService.getOne(new QueryWrapper<ConUserPost>()
                 .eq("post_id", sysPost.getId()));
-        long postOwnerId = con.getUserId();
+        if(con!=null)
+            postOwnerId = con.getUserId();
 
-        SysUser postOwner = sysUserService.getById(postOwnerId);
+        SysUser postOwner = sysUserService.getSysUserById(postOwnerId);
         UserInfo postUserInfo = swapUserInfoService.swap(postOwner);
 
         return new SysPostRes(sysPost.getId(), postUserInfo, sysPost.getTitle(), sysPost.getContent(),

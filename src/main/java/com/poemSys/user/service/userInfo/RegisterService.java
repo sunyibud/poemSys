@@ -41,9 +41,6 @@ public class RegisterService
         IsOk isOk = new IsOk();
         Object object = redisUtil.hget(Const.EMAIL_KEY, key+userRegisterForm.getEmail(), isOk);
 
-        log.info("input email code: "+emailCode);
-        log.info("redis email code: "+object.toString());
-
         if(!isOk.isOk())
             return new Result(-1, "服务器异常，redis操作失败", null);
 
@@ -52,6 +49,9 @@ public class RegisterService
             log.info("邮箱验证码错误或不匹配");
             return new Result(1, "邮箱验证码有误或邮箱与验证码不匹配", null);
         }
+
+        log.info("input email code: "+emailCode);
+        log.info("redis email code: "+object.toString());
 
         //判断用户名是否存在
         String username = userRegisterForm.getUsername();

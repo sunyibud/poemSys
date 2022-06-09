@@ -1,5 +1,6 @@
 package com.poemSys.admin.controller;
 
+import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poemSys.admin.bean.Form.*;
 import com.poemSys.admin.service.userManage.UserListInfoPageAnsProcessService;
@@ -7,9 +8,14 @@ import com.poemSys.admin.service.userManage.SearchUserService;
 import com.poemSys.admin.service.userManage.UpdateUserInfoService;
 import com.poemSys.admin.bean.PageListRes;
 import com.poemSys.common.bean.Result;
+import com.poemSys.common.entity.basic.SysMessage;
+import com.poemSys.common.service.SysMessageService;
+import com.poemSys.user.bean.WebsocketMsg;
 import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.SysUserService;
+import com.poemSys.user.service.general.UpdateRedisSysUserService;
+import com.poemSys.user.service.general.WebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,6 +47,15 @@ public class UserManageController
 
     @Autowired
     SearchUserService searchUserService;
+
+    @Autowired
+    WebSocketService webSocketService;
+
+    @Autowired
+    UpdateRedisSysUserService updateRedisSysUserService;
+
+    @Autowired
+    SysMessageService sysMessageService;
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/partUserList/{page}/{size}")
@@ -93,6 +108,7 @@ public class UserManageController
     {
         try
         {
+            Long loginUserId = getLoginSysUserService.getSysUser().getId();
             Long userId = lockUserForm.getId();
             if(userId==1)
                 return new Result(-2, "无法锁定系统默认用户", null);
@@ -107,6 +123,15 @@ public class UserManageController
             sysUser.setLockReason(lockUserForm.getLockReason());
             sysUser.setLockAdmin(getLoginSysUserService.getSysUser().getUsername());
             sysUserService.updateById(sysUser);
+
+            sysMessageService.save(new SysMessage(userId, false, 4,
+                    0, "对您的账号进行了封禁", loginUserId, true, LocalDateTime.now(),
+                    UUID.randomUUID().toString(),0));
+            webSocketService.sendMessageOnServer(userId,
+                    new WebsocketMsg(4, loginUserId,
+                            userId, "管理员"+getLoginSysUserService.getSysUser().getUsername()+"封了你的号"));
+            updateRedisSysUserService.updateById(userId);
+
             return new Result(0, "用户锁定成功", null);
         }catch (NullPointerException e)
         {
@@ -119,12 +144,14 @@ public class UserManageController
     @PostMapping("/unlockUser")
     public Result unlockUser(@RequestBody UnlockUserForm unlockUserForm)
     {
-        SysUser sysUser = sysUserService.getById(unlockUserForm.getId());
+        SysUser sysUser = sysUserService.getSysUserById(unlockUserForm.getId());
         sysUser.setState(true);
         sysUser.setUnlockTime(null);
         sysUser.setLockReason(null);
         sysUser.setLockAdmin(null);
         sysUserService.updateById(sysUser);
+        updateRedisSysUserService.updateById(unlockUserForm.getId());
+
         return new Result(0, "用户解锁成功", null);
     }
 

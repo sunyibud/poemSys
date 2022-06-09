@@ -1,5 +1,7 @@
 package com.poemSys.common.entity.basic;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.poemSys.common.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -20,9 +22,12 @@ public class SysFeedback extends BaseEntity
 
     private long applyUserId;
     private String content;
-    private String state;
+    private boolean state;
     private LocalDateTime createdTime;
+
+    @TableField(updateStrategy = FieldStrategy.IGNORED)//为空时也可以设置
     private LocalDateTime solveTime;
+
     private String feedbackInfo;
     private long processorUserId;
 }

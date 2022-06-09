@@ -1,5 +1,6 @@
 package com.poemSys.common.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,12 +37,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUser getSysUserById(Long userId)
-    {
-        return getById(userId);
-    }
-
-    @Override
     public String getUserAuthorityInfo(Long userId)
     {
         String authority = "";
@@ -57,8 +53,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     .inSql("id", "select role_id from con_user_role where user_id = " + userId));
             if (roles.size() > 0)
             {
-                String roleCodes = roles.stream().map(r -> "ROLE_" + r.getCode()).collect(Collectors.joining(","));
-                authority = roleCodes;
+                authority = roles.stream().map(r -> "ROLE_" + r.getCode()).collect(Collectors.joining(","));
             }
             //获取菜单操作编码
             //...
@@ -81,9 +76,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     {
         List<SysUser> sysUsers = this.list(new QueryWrapper<SysUser>().inSql("id",
                 "select user_id from con_user_role where role_id= " + roleId));
-        sysUsers.forEach(u ->{
-            this.clearUserAuthorityInfoByUserId(u.getId());
-        });
+        sysUsers.forEach(u -> this.clearUserAuthorityInfoByUserId(u.getId()));
     }
 
     @Override
@@ -91,6 +84,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     {
         if(id==1)
             return;
+        this.clearRedisSysUserById(id);
         this.removeById(id);
     }
 
@@ -125,7 +119,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return this.page(userPage);
 
         //不为空，分页查询结果
-        Page<SysUser> pageAns = this.page(userPage,
+        return this.page(userPage,
                 new QueryWrapper<SysUser>()
                         .like("username", keyWord)
                         .or().like("signature", keyWord)
@@ -134,7 +128,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                         .or().like("telephone", keyWord)
                         .or().like("register_time", keyWord)
         );
-        return pageAns;
     }
 
     @Override
@@ -142,5 +135,31 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     {
         SysUser email = getOne(new QueryWrapper<SysUser>().eq("email", emailAddress));
         return email != null;
+    }
+
+    //根据id获取用户信息字段（用redis优化）
+    @Override
+    public SysUser getSysUserById(Serializable id)
+    {
+        //查看redis中是否缓存
+        if(redisUtil.hasKey("sysUser:"+id))
+        {
+            String jsonStr = (String) redisUtil.get("sysUser:" + id);
+            return JSONUtil.toBean(jsonStr, SysUser.class);
+        }
+        else
+        {
+            SysUser sysUser = this.getById(id);
+            //将对象转化成json再存入redis
+            redisUtil.set("sysUser:" + id,
+                    JSONUtil.toJsonStr(sysUser), 60 * 60 * 24 * 10);//10天
+            return sysUser;
+        }
+    }
+
+    @Override
+    public void clearRedisSysUserById(Serializable id)
+    {
+        redisUtil.del("sysUser:"+id);
     }
 }

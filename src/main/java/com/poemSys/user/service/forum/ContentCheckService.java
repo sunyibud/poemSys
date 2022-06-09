@@ -15,35 +15,38 @@ import java.util.Base64;
 public class ContentCheckService
 {
     private static String[] banned_words;
-    private static final String fileName = "/root/dist/banned_words.txt";
-//    private static final String fileName = "www.amberlake.top/banned_word.txt";
+    private static String filePath = "/root/user_dist/banned_words.txt";
+//    private static String filePath = "src/main/resources/static/files/banned_words.txt";
 
     // 定义静态代码块类初始化时执行
     static
     {
         BufferedReader bufferedReader;
-        try
+        int count = 2;
+        while(true)
         {
-            bufferedReader = new BufferedReader(new FileReader(fileName));
-            log.info("fileName: "+fileName);
-            if (!bufferedReader.ready())
+            if(count == 0)
+                break;
+            count -- ;
+            try
             {
-                log.error("文件无法读取......");
-            }
-            String line;
-            StringBuilder lines = new StringBuilder();
-            while ((line = bufferedReader.readLine()) != null)
+                bufferedReader = new BufferedReader(new FileReader(filePath));
+                log.info("违禁词文件读取成功,filePath: " + filePath);
+                String line;
+                StringBuilder lines = new StringBuilder();
+                while ((line = bufferedReader.readLine()) != null)
+                {
+                    byte[] decodedBytes = Base64.getDecoder().decode(line);   // 将文件中的base64编码格式转换
+                    line = new String(decodedBytes);
+                    lines.append(line).append("、");
+                }
+                banned_words = lines.toString().split("、");
+                bufferedReader.close();
+                break;
+            } catch (Exception e)
             {
-                byte[] decodedBytes = Base64.getDecoder().decode(line);   // 将文件中的base64编码格式转换
-                line = new String(decodedBytes);
-                lines.append(line).append("、");
+                filePath = "src/main/resources/static/files/banned_words.txt";
             }
-            banned_words = lines.toString().split("、");
-            bufferedReader.close();
-        } catch (Exception e)
-        {
-            log.error("违禁词文件读取失败");
-//            e.printStackTrace();
         }
     }
 
@@ -103,7 +106,7 @@ public class ContentCheckService
      */
     public boolean AddBannedWord(String word) throws IOException
     {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
         // 判断词是否存在文件中
         boolean isContains = Arrays.asList(banned_words).contains(word);
         if (isContains) return false;
@@ -193,7 +196,7 @@ public class ContentCheckService
         StringBuilder temp = new StringBuilder();
         for (int i = 0; i < word.length(); i++)
         {
-            temp.append("\\*");  // 变成相同长度的*号
+            temp.append("*");  // 变成相同长度的*号
         }
         return temp.toString();
     }

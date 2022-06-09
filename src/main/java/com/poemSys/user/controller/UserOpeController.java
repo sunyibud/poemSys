@@ -2,6 +2,7 @@ package com.poemSys.user.controller;
 
 import com.poemSys.admin.bean.Form.IdForm;
 import com.poemSys.common.bean.Result;
+import com.poemSys.user.bean.Form.ContentForm;
 import com.poemSys.user.bean.Form.SendLetterForm;
 import com.poemSys.user.service.userOpe.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class UserOpeController
 
     @Autowired
     FollowUserService followUserService;
+
+    @Autowired
+    OpenLetterFrameService openLetterFrameService;
+
+    @Autowired
+    SubmitFeedbackService submitFeedbackService;
 
     /**
      * 点赞和取消点赞古诗词
@@ -89,5 +96,21 @@ public class UserOpeController
     public Result follow(@RequestBody IdForm idForm)
     {
         return followUserService.follow(idForm);
+    }
+
+    /**
+     * 打开与某个用户的私信聊天框（如果没有就创建）
+     * @param idForm 与之私信的id
+     */
+    @PostMapping("/openLetterFrame")
+    public Result openLetterFrame(@RequestBody IdForm idForm)
+    {
+        return openLetterFrameService.open(idForm);
+    }
+
+    @PostMapping("/submitFeedback")
+    public Result submitFeedback(@RequestBody ContentForm contentForm)
+    {
+        return submitFeedbackService.submit(contentForm);
     }
 }

@@ -106,7 +106,7 @@ public class EmailService{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper;
         try {
-            String content = "<center><h1><a href=\"http://www.amberlake.top/login\" style=\"text-decoration-line: none; color: #00C5CD\">古诗文网</a></h1>\n" +
+            String content = "<center><h1><a href=\"http://www.amberlake.top\" style=\"text-decoration-line: none; color: #00C5CD\">古诗文网</a></h1>\n" +
                     "\t<p><b style=\"font-size: 25px;\">Hi, Friend, 欢迎来到古诗文网</b></p>\n" +
                     "\t<p style=\"font-size: 18px\">以下是<b style=\" font-size: 22px\">"+ verificationLength  +"位验证码</b>，请于<b style=\"font-size: 22px \">3分钟</b>内在网页填写</p><div style=\"background: #5BAFDE; width: 150px\"><h3 style=\"text-align: center; font-size: 30px; color: white\">" +
                     verification +"</h3></div>\n" +

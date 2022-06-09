@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * 更改了登录用户信息后对redis中缓存的登录用户信息进行更新
  */
 @Service
-public class UpdateRedisLoginSysUserService
+public class UpdateRedisSysUserService
 {
     @Autowired
     JwtUtils jwtUtils;
@@ -27,13 +27,23 @@ public class UpdateRedisLoginSysUserService
     @Autowired
     GetLoginSysUserService getLoginSysUserService;
 
+    /**
+     * 更新当前登录用户
+     */
     public void update()
     {
         Long userId = getLoginSysUserService.getSysUser().getId();
-        SysUser sysUser = sysUserService.getSysUserById(userId);
+        SysUser sysUser = sysUserService.getById(userId);
+
+        redisUtil.set("sysUser:" + userId,
+                JSONUtil.toJsonStr(sysUser), 60 * 60 * 24 * 10);//10天
+    }
+    public void updateById(long userId)
+    {
+        SysUser sysUser = sysUserService.getById(userId);
 
         //将对象转化成json再存入redis
-        redisUtil.set("LoginUserInfo:" + userId,
-                JSONUtil.toJsonStr(sysUser), 60 * 60);//60分钟
+        redisUtil.set("sysUser:" + userId,
+                JSONUtil.toJsonStr(sysUser), 60 * 60 * 24 * 10);//10天
     }
 }

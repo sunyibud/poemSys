@@ -1,12 +1,15 @@
 package com.poemSys.common.security;
 
 import cn.hutool.core.util.StrUtil;
+import com.poemSys.common.entity.basic.SysUser;
+import com.poemSys.common.service.SysUserService;
 import com.poemSys.user.service.general.GetLoginSysUserService;
 import com.poemSys.common.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -16,6 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *jwt身份认证过滤器
@@ -31,6 +36,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter
 
     @Autowired
     GetLoginSysUserService getLoginSysUserByIdService;
+
+    @Autowired
+    SysUserService sysUserService;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager)
     {
@@ -64,6 +72,17 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter
         }
         //通过jwt主体中拿到用户Id（创建jwt时设置的）
         Long userId = Long.parseLong(claim.getSubject());
+        //判断是否已经被封号了
+        SysUser sysUser = sysUserService.getSysUserById(userId);
+        if(sysUser!=null)
+        {
+            LocalDateTime unlockTime = sysUser.getUnlockTime();
+            if (unlockTime != null && unlockTime.isAfter(LocalDateTime.now()))
+            {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
 
         //获取用户权限等信息
 

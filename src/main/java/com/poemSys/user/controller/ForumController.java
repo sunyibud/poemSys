@@ -14,7 +14,7 @@ import com.poemSys.user.bean.PostPageAns;
 import com.poemSys.user.service.forum.*;
 import com.poemSys.user.service.general.ImageUploadService;
 import com.poemSys.user.service.general.PostPageAnsProService;
-import com.poemSys.user.service.general.SwapSysPostRecService;
+import com.poemSys.user.service.general.SwapSysPostResService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,7 +48,7 @@ public class ForumController
     PostPageAnsProService postPageAnsProService;
 
     @Autowired
-    SwapSysPostRecService swapSysPostRecService;
+    SwapSysPostResService swapSysPostResService;
 
     @Autowired
     AddPostService addPostService;
@@ -121,7 +121,7 @@ public class ForumController
     }
 
     @PostMapping("/updateMyPost")
-    public Result updateMyPost(@RequestBody UpdateMyPostForm updateMyPostForm)
+    public Result updateMyPost(UpdateMyPostForm updateMyPostForm)
     {
         return updateMyPostService.update(updateMyPostForm);
     }

@@ -74,7 +74,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter
                 String code = map.get("code");
                 this.username = map.get(getUsernameParameter());
                 this.password = map.get(getPasswordParameter());
-/*
+
                 if (StringUtils.isBlank(code) || StringUtils.isBlank(key))
                 {
                     log.error("验证码为空");
@@ -90,7 +90,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter
                     log.error("验证码错误");
                     throw new CaptchaException("验证码错误");
                 }
-*/
+
                 //一次性使用，在Redis中去掉验证码
                 if(!redisUtil.hdel(Const.CAPTCHA_KEY, key))
                     throw new CaptchaException("服务器异常, 验证码验证失败");
@@ -108,7 +108,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter
                 outputStream.flush();
                 outputStream.close();
             }
-            UsernamePasswordAuthenticationToken authRequest = null;
+            UsernamePasswordAuthenticationToken authRequest;
             authRequest = new UsernamePasswordAuthenticationToken(username, password);
             //发送给UserDetailsService信息
             setDetails(request, authRequest);

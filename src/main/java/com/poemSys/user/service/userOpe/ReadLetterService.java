@@ -35,6 +35,7 @@ public class ReadLetterService
     {
         Long loginUserId = getLoginSysUserService.getSysUser().getId();
         long sysMessageId = idForm.getId();
+
         //将sysMessage设为已读
         SysMessage sysMessage = sysMessageService.getById(sysMessageId);
         if(sysMessage==null)
@@ -49,15 +50,20 @@ public class ReadLetterService
                 .eq("message_id", sysMessageId));
         List<Long> letterIds = new ArrayList<>();
         con.forEach(c-> letterIds.add(c.getLetterId()));
-        List<SysLetter> letters = sysLetterService.list(new QueryWrapper<SysLetter>()
-                .in("id", letterIds));
-        letters.forEach(l->{
-            if(l.getReceiveUserId()==loginUserId)
+        if(!letterIds.isEmpty())
+        {
+            List<SysLetter> letters = sysLetterService.list(new QueryWrapper<SysLetter>()
+                    .in("id", letterIds));
+
+            letters.forEach(l ->
             {
-                l.setState(true);
-                sysLetterService.updateById(l);
-            }
-        });
+                if (l.getReceiveUserId() == loginUserId)
+                {
+                    l.setState(true);
+                    sysLetterService.updateById(l);
+                }
+            });
+        }
         return new Result(0, "消息"+sysMessageId+"(id)"+"已设为已读(私信消息)", null);
     }
 }

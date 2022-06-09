@@ -9,7 +9,7 @@ public class SearchForm implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    private String keyWord;
     private Long page;
     private Long size;
+    private String keyword;
 }

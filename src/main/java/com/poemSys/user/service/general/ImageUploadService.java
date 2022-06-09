@@ -22,7 +22,7 @@ public class ImageUploadService
      */
     public Result upload(MultipartFile file, String filePath)
     {
-        String foldPath = "/root/dist" + filePath;
+        String foldPath = "/root/user_dist" + filePath;
         if (file==null)
             return new Result(1, "文件上传为空或接收异常", null);
         try {

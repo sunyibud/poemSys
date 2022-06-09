@@ -21,7 +21,7 @@ public class GetUserInfoByIdService
     public Result get(IdForm idForm)
     {
         long userId = idForm.getId();
-        SysUser sysUser = sysUserService.getById(userId);
+        SysUser sysUser = sysUserService.getSysUserById(userId);
 
         if(sysUser == null)
             return new Result(1, "用户不存在,id:"+userId, null);

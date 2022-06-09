@@ -5,7 +5,7 @@ import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysUser;
 import com.poemSys.common.service.ConUserRoleService;
 import com.poemSys.common.service.SysUserService;
-import com.poemSys.user.service.general.UpdateRedisLoginSysUserService;
+import com.poemSys.user.service.general.UpdateRedisSysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class UpdateUserInfoService
     SysUserService sysUserService;
 
     @Autowired
-    UpdateRedisLoginSysUserService updateRedisLoginSysUserService;
+    UpdateRedisSysUserService updateRedisSysUserService;
 
     @Autowired
     ConUserRoleService conUserRoleService;
@@ -74,7 +74,7 @@ public class UpdateUserInfoService
         sysUser.setHeadPath(newHeadPath);
         sysUserService.updateById(sysUser);
 
-        updateRedisLoginSysUserService.update();
+        updateRedisSysUserService.updateById(id);
         return new Result(0, "用户信息修改成功", null);
     }
 }

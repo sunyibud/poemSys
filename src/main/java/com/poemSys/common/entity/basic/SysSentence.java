@@ -17,5 +17,5 @@ public class SysSentence extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     private String sentence;
-    private String from;
+    private String origin;
 }

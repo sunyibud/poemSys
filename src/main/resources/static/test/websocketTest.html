@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>websocket通讯</title>
+</head>
+<script>
+    window.onload = function (){
+        openSocket();
+    }
+
+    let websocket;
+    function openSocket() {//打开浏览器时执行一次就行
+        let wsBasePath = "ws://www.amberlake.top/";
+
+        let userId = 1; //      /api/user/loginUserInfo获取用户id填入
+        if ('WebSocket' in window) {
+            //Websocket的连接
+            websocket = new WebSocket(wsBasePath + "ws/" + userId); //WebSocket对应的地址
+
+            console.log(wsBasePath + "ws/" + 1);
+
+            websocket.onopen = onOpen;
+            websocket.onmessage = onMessage;
+            websocket.onerror = onError;
+            websocket.onclose = onClose;
+        }
+    }
+
+    function onOpen(evt) {
+        console.log("连接打开：", evt);
+    }
+
+    function onMessage(evt) {//每当服务器向客户端发送websocket消息时会调用这个方法
+        let data = eval("(" + evt.data + ")");   //服务器发送消息的封装{type,sendUserId,toUserId,content}
+        let type = data.type;
+        switch (type){
+            case 1 : {//系统消息
+                console.log(data.content);
+                break;
+            }
+            case 2 : {//接受到私信
+                    // 当用户在私信界面（与某个用户聊天）时将接收到的消息内容放入到对应用户的聊天列表中
+                    // 否者只需要重新获取newMessageNum和myMessage/5接口
+                console.log("type:"+type+"用户"+data.sendUserId+"发送了私信消息("+data.content+")给你"+data.toUserId)
+                break;
+            }
+            case 3 : {//其他（重新获取newMessageNum接口）
+                console.log("type:"+type+"刷新了新消息数量");
+                console.log(data.content)
+                break;
+            }
+        }
+    }
+
+    function onError(evt) {
+        console.log("出现错误：", evt);
+    }
+
+    function onClose(evt) {
+        console.log("连接关闭：", evt);
+    }
+</script>
+<body>
+看console
+</body>
+
+</html>

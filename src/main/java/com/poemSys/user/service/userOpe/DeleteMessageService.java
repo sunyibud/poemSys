@@ -30,12 +30,18 @@ public class DeleteMessageService
     @Autowired
     SysLetterService sysLetterService;
 
+
     public Result delete(IdForm idForm)
     {
+        Long loginUserId = getLoginSysUserService.getSysUser().getId();
+
         long msgId = idForm.getId();
         SysMessage sysMessage = sysMessageService.getById(msgId);
         if(sysMessage==null)
             return new Result(1, "消息不存在,id:"+msgId, null);
+        if(sysMessage.getUserId()!=loginUserId)
+            return new Result(1, "权限不足,该条消息不属于用户"+loginUserId+"(id)", null);
+
         int type = sysMessage.getType();
         if(type!=5) //不是私信消息
         {
@@ -43,7 +49,7 @@ public class DeleteMessageService
             return new Result(0, "普通消息删除成功,id:"+msgId, null);
         }
         //让该条私信不在列表中显示
-        sysMessage.set_show(false);
+        sysMessage.setShow(false);
         sysMessageService.updateById(sysMessage);
         return new Result(0, "私信消息删除成功,id:"+msgId, null);
     }

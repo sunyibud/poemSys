@@ -8,7 +8,10 @@ import com.poemSys.common.entity.connection.ConUserFollow;
 import com.poemSys.common.service.ConUserFollowService;
 import com.poemSys.common.service.SysMessageService;
 import com.poemSys.common.service.SysUserService;
+import com.poemSys.user.bean.WebsocketMsg;
 import com.poemSys.user.service.general.GetLoginSysUserService;
+import com.poemSys.user.service.general.UpdateRedisSysUserService;
+import com.poemSys.user.service.general.WebSocketService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +37,12 @@ public class FollowUserService
     @Autowired
     SysUserService sysUserService;
 
+    @Autowired
+    WebSocketService webSocketService;
+
+    @Autowired
+    UpdateRedisSysUserService updateRedisSysUserService;
+
     public Result follow(IdForm idForm)
     {
         long followUserId = getLoginSysUserService.getSysUser().getId();
@@ -49,21 +58,40 @@ public class FollowUserService
         {
             conUserFollowService.save(new ConUserFollow(followUserId, beFollowUserId));
 
-            //消息处理
-            sysMessageService.save(new SysMessage(beFollowUserId, false, 2, 0,
-                    followUserId, null, 0, true, LocalDateTime.now(),
-                    UUID.randomUUID().toString(), 0));
+            //消息处理(如果存在改消息则无需重复新建，直接修改已读状态state和建立时间）
+            SysMessage msg = sysMessageService.getOne(new QueryWrapper<SysMessage>()
+                    .eq("user_id", beFollowUserId).eq("other_user_id", followUserId)
+                    .eq("type", 2));
+            if(msg==null)
+                sysMessageService.save(new SysMessage(beFollowUserId, false, 2, 0,
+                        null, followUserId, true, LocalDateTime.now(),
+                        UUID.randomUUID().toString(), 0));
+            else
+            {
+                msg.setReceiveTime(LocalDateTime.now());
+                msg.setState(false);
+                sysMessageService.updateById(msg);
+            }
+            webSocketService.sendMessageOnServer(beFollowUserId, new WebsocketMsg(2, 0, 0, "用户"+followUserId+"关注了你"));
 
-            long newFansNum = sysUserService.getById(beFollowUserId).getFansNum();
+            updateRedisSysUserService.updateById(beFollowUserId);
+            updateRedisSysUserService.update();
+
+            long newFansNum = sysUserService.getSysUserById(beFollowUserId).getFansNum();
             NewState newState = new NewState(true, newFansNum);
+
             return new Result(0, "用户"+followUserId+"(id)成功关注用户"+beFollowUserId+"(id)", newState);
         }
         else    //取消关注
         {
             conUserFollowService.removeById(one);
 
-            long newFansNum = sysUserService.getById(beFollowUserId).getFansNum();
+            updateRedisSysUserService.updateById(beFollowUserId);
+            updateRedisSysUserService.update();
+
+            long newFansNum = sysUserService.getSysUserById(beFollowUserId).getFansNum();
             NewState newState = new NewState(false, newFansNum);
+
             return new Result(0, "用户"+followUserId+"(id)成功取消关注用户"+beFollowUserId+"(id)", newState);
         }
     }

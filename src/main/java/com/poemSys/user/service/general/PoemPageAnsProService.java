@@ -1,7 +1,6 @@
 package com.poemSys.user.service.general;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysPoem;
 import com.poemSys.user.bean.PoemPageAns;
 import com.poemSys.user.bean.SysPoemRes;
@@ -18,13 +17,13 @@ import java.util.List;
 public class PoemPageAnsProService
 {
     @Autowired
-    SwapSysPoemRecService swapSysPoemRecService;
+    SwapSysPoemResService swapSysPoemResService;
 
     public PoemPageAns pro(Page<SysPoem> pageAns)
     {
         List<SysPoem> records = pageAns.getRecords();
         List<SysPoemRes> newRecords = new ArrayList<>();
-        records.forEach(r-> newRecords.add(swapSysPoemRecService.swap(r)));
+        records.forEach(r-> newRecords.add(swapSysPoemResService.swap(r)));
         return new PoemPageAns(pageAns.getTotal(), pageAns.getSize(),
                 pageAns.getCurrent(), pageAns.getPages(), newRecords);
     }

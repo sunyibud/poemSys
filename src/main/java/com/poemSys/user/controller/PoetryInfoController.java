@@ -3,6 +3,7 @@ package com.poemSys.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.poemSys.admin.bean.Form.IdForm;
+import com.poemSys.admin.bean.Form.SearchForm;
 import com.poemSys.common.bean.Result;
 import com.poemSys.common.entity.basic.SysDynasty;
 import com.poemSys.common.entity.basic.SysPoem;
@@ -10,12 +11,13 @@ import com.poemSys.common.entity.basic.SysPoet;
 import com.poemSys.common.entity.basic.SysTag;
 import com.poemSys.common.entity.connection.ConPoetPoem;
 import com.poemSys.common.service.*;
+import com.poemSys.user.bean.Form.ContentForm;
 import com.poemSys.user.bean.Form.NumForm;
 import com.poemSys.user.bean.Form.PageByIdForm;
 import com.poemSys.user.bean.PoemPageAns;
 import com.poemSys.user.bean.SysPoemRes;
 import com.poemSys.user.service.general.PoemPageAnsProService;
-import com.poemSys.user.service.general.SwapSysPoemRecService;
+import com.poemSys.user.service.general.SwapSysPoemResService;
 import com.poemSys.user.service.poetryInfo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -69,10 +71,16 @@ public class PoetryInfoController
     GetRecPoetsService getRecPoetsService;
 
     @Autowired
-    SwapSysPoemRecService swapSysPoemRecService;
+    SwapSysPoemResService swapSysPoemResService;
 
     @Autowired
     PoemPageAnsProService poemPageAnsProService;
+
+    @Autowired
+    SearchPoetryService searchPoetryService;
+
+    @Autowired
+    KeywordRecService keyWordRecService;
 
     @GetMapping("/partPoemList/{page}/{size}")
     public Result partPoemList(@PathVariable("page") Integer page,
@@ -118,7 +126,7 @@ public class PoetryInfoController
         SysPoem poem = sysPoemService.getById(idForm.getId());
         if(poem==null)
             return new Result(1, "没有查询到古诗词,id:"+idForm.getId(), null);
-        SysPoemRes poemRes = swapSysPoemRecService.swap(poem);
+        SysPoemRes poemRes = swapSysPoemResService.swap(poem);
         return new Result(0, "古诗词信息获取成功,id:"+idForm.getId(), poemRes);
     }
 
@@ -212,4 +220,21 @@ public class PoetryInfoController
     {
         return getPoemsByPoetService.get(pageByIdForm);
     }
+
+    @PostMapping("/keywordRec")
+    public Result keywordRec(@RequestBody ContentForm contentForm)
+    {
+        return keyWordRecService.get(contentForm);
+    }
+
+
+    /**
+     * 搜索古诗词有关信息,分页获取结果
+     */
+    @PostMapping("/searchPoetry")
+    public Result searchPoetry(@RequestBody SearchForm searchForm)
+    {
+        return searchPoetryService.search(searchForm);
+    }
+
 }
