@@ -1,5 +1,5 @@
 上线网址:
-http://sunyi.asis/pomsys
+http://sunyi.asia/pomsys
 
 
 ## 第一次提交修改内容为：
